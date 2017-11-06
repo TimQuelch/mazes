@@ -36,6 +36,9 @@ namespace mazes {
         void print();
         void printGraph();
 
+        void writePng(std::string filename);
+        void writePngGraph(std::string filename);
+
     private:
         unsigned size_;
         std::vector<std::vector<bool>> grid_;
