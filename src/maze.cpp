@@ -49,12 +49,11 @@ namespace mazes {
 
         std::list<Point> getNeighbours(unsigned gridSize, Point p) {
             std::list<Point> newNodes;
+            newNodes.push_back({p.x - 2, p.y});
             newNodes.push_back({p.x, p.y - 2});
             newNodes.push_back({p.x, p.y + 2});
-            newNodes.push_back({p.x - 2, p.y});
             newNodes.push_back({p.x + 2, p.y});
             newNodes.remove_if([gridSize](Point p) { return !isLegal(p, gridSize); });
-            newNodes.sort();
             return newNodes;
         }
 
