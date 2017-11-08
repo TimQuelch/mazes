@@ -194,7 +194,7 @@ namespace mazes {
         , grid_{generateGrid(size, loopFactor)}
         , graph_{generateGraph(grid_)} {}
 
-    void Maze::print() {
+    void Maze::print() const {
         std::cout << "    ";
         for (unsigned i = 0; i < size_; i++) {
             std::cout << std::setw(2) << i << " ";
@@ -214,7 +214,7 @@ namespace mazes {
         std::cout << "\n";
     }
 
-    void Maze::printGraph() {
+    void Maze::printGraph() const {
         std::vector<std::vector<bool>> graphGrid;
         graphGrid.resize(size_);
         for (int i = 0; i < size_; i++) {
@@ -249,7 +249,7 @@ namespace mazes {
         std::cout << "\n";
     }
 
-    void Maze::writePng(std::string filename) {
+    void Maze::writePng(std::string filename) const {
         png::image<png::rgb_pixel> image{size_, size_};
         for (int j = 0; j < size_; j++) {
             for (int i = 0; i < size_; i++) {
@@ -263,7 +263,7 @@ namespace mazes {
         image.write(filename);
     }
 
-    void Maze::writePngGraph(std::string filename) {
+    void Maze::writePngGraph(std::string filename) const {
         std::vector<std::vector<bool>> graphGrid;
         graphGrid.resize(size_);
         for (int i = 0; i < size_; i++) {
@@ -290,5 +290,5 @@ namespace mazes {
             }
         }
         image.write(filename);
-    } // namespace mazes
+    }
 } // namespace mazes

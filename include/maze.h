@@ -33,11 +33,12 @@ namespace mazes {
 
         Maze(unsigned size = DEFAULT_MAZE_SIZE, float loopFactor = DEFAULT_LOOP_FACTOR);
 
-        void print();
-        void printGraph();
 
-        void writePng(std::string filename);
-        void writePngGraph(std::string filename);
+        void print() const;
+        void printGraph() const;
+
+        void writePng(std::string filename) const;
+        void writePngGraph(std::string filename) const;
 
     private:
         unsigned size_;
