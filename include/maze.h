@@ -1,3 +1,6 @@
+#ifndef MAZES_MAZE_H
+#define MAZES_MAZE_H
+
 #include <list>
 #include <memory>
 #include <vector>
@@ -47,3 +50,5 @@ namespace mazes {
         std::list<std::shared_ptr<Node>> graph_;
     };
 } // namespace mazes
+
+#endif
