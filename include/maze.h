@@ -14,8 +14,8 @@ namespace mazes {
         struct Edge;
         struct Node {
         public:
-            int x;
-            int y;
+            const int x;
+            const int y;
             std::list<Edge> edges;
 
             Node(int x, int y, std::list<Edge> edges)
@@ -26,8 +26,8 @@ namespace mazes {
 
         struct Edge {
         public:
-            std::shared_ptr<Node> node;
-            int cost;
+            const std::shared_ptr<Node> node;
+            const int cost;
 
             Edge(std::shared_ptr<Node> node, int cost)
                 : node{node}
