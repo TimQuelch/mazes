@@ -249,7 +249,7 @@ namespace mazes {
         std::cout << "\n";
     }
 
-    void Maze::writePng(std::string filename) const {
+    void Maze::writePng(std::string_view filename) const {
         png::image<png::rgb_pixel> image{size_, size_};
         for (int j = 0; j < size_; j++) {
             for (int i = 0; i < size_; i++) {
@@ -260,10 +260,10 @@ namespace mazes {
                 }
             }
         }
-        image.write(filename);
+        image.write(filename.data());
     }
 
-    void Maze::writePngGraph(std::string filename) const {
+    void Maze::writePngGraph(std::string_view filename) const {
         std::vector<std::vector<bool>> graphGrid;
         graphGrid.resize(size_);
         for (int i = 0; i < size_; i++) {
@@ -289,6 +289,6 @@ namespace mazes {
                 }
             }
         }
-        image.write(filename);
+        image.write(filename.data());
     }
 } // namespace mazes

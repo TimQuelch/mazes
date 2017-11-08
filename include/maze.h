@@ -38,8 +38,8 @@ namespace mazes {
         void print() const;
         void printGraph() const;
 
-        void writePng(std::string filename) const;
-        void writePngGraph(std::string filename) const;
+        void writePng(std::string_view filename) const;
+        void writePngGraph(std::string_view filename) const;
 
     private:
         unsigned size_;
