@@ -1,5 +1,6 @@
 set(SOURCE_FILES
     mazes.cpp
+    solvers.cpp
     maze.cpp)
 
 add_executable(maze ${SOURCE_FILES})
