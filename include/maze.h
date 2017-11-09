@@ -37,6 +37,8 @@ namespace mazes {
         Maze(unsigned size = DEFAULT_MAZE_SIZE, float loopFactor = DEFAULT_LOOP_FACTOR);
 
         std::list<std::shared_ptr<Node>> const& getGraph() const { return graph_; }
+        std::shared_ptr<Node> getStartNode() const { return graph_.front(); }
+        std::shared_ptr<Node> getEndNode() const { return graph_.back(); }
 
         void print() const;
         void printGraph() const;
