@@ -288,4 +288,32 @@ namespace mazes {
         }
         image.write(filename.data());
     }
+
+    void Maze::writePngPath(std::list<std::shared_ptr<Node>> path,
+                            std::string_view filename) const {
+        png::image<png::rgb_pixel> image{size_, size_};
+        for (int j = 0; j < size_; j++) {
+            for (int i = 0; i < size_; i++) {
+                if (grid_[i][j]) {
+                    image[j][i] = png::rgb_pixel(255, 255, 255);
+                } else {
+                    image[j][i] = png::rgb_pixel(0, 0, 0);
+                }
+            }
+        }
+
+        Point prev = {path.front()->x, path.front()->y};
+        for (auto const& node : path) {
+            Point start = {std::min(prev.x, node->x), std::min(prev.y, node->y)};
+            Point end = {std::max(prev.x + 1, node->x + 1), std::max(prev.y + 1, node->y + 1)};
+            for (int i = start.x; i != end.x; i++) {
+                for (int j = start.y; j != end.y; j++) {
+                    image[j][i] = png::rgb_pixel(255, 0, 0);
+                }
+            }
+            prev = {node->x, node->y};
+        }
+
+        image.write(filename.data());
+    }
 } // namespace mazes

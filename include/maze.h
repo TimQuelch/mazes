@@ -46,6 +46,8 @@ namespace mazes {
         void writePng(std::string_view filename) const;
         void writePngGraph(std::string_view filename) const;
 
+        void writePngPath(std::list<std::shared_ptr<Node>> path, std::string_view filename) const;
+
     private:
         unsigned size_;
         std::vector<std::vector<bool>> grid_;
