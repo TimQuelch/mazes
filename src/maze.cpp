@@ -141,7 +141,7 @@ namespace mazes {
             graph.push_back(first);
             above.push_back(first);
 
-            for (int j = 1; j < size - 1; j++) {
+            for (int j = 1; j < size; j++) {
                 std::shared_ptr<Node> left = nullptr;
                 auto nodeAbove = above.begin();
                 for (int i = 1; i < size - 1; i++) {
@@ -160,9 +160,14 @@ namespace mazes {
                             std::shared_ptr<Node> node = std::make_shared<Node>(i, j, edges);
                             graph.push_back(node);
                             above.insert(nodeAbove, node);
+                            left = node;
                             for (Edge const& edge : edges) {
                                 edge.node->edges.push_back({node, edge.cost});
                             }
+                        }
+                        if (isVCorridor({i, j}, grid) && nodeAbove != above.end() &&
+                            (*nodeAbove)->x == i) {
+                            nodeAbove++;
                         }
                     } else {
                         left = nullptr;
@@ -173,17 +178,9 @@ namespace mazes {
                 }
             }
 
-            auto nodeAbove = std::find_if(above.begin(), above.end(), [size](auto const& nodePtr) {
-                return nodePtr->x == size - 2;
+            graph.sort([](auto& one, auto& two) {
+                return std::tie(one->x, one->y) < std::tie(two->x, two->y);
             });
-            int cost = calcCost({size - 2, size - 1}, {(*nodeAbove)->x, (*nodeAbove)->y});
-            std::list<Edge> edges;
-            edges.push_back({*nodeAbove, cost});
-            std::shared_ptr<Node> last = std::make_shared<Node>(size - 2, size - 1, edges);
-            graph.push_back(last);
-            for (Edge const& edge : edges) {
-                edge.node->edges.push_back({last, edge.cost});
-            }
 
             return graph;
         }
