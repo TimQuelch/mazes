@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <deque>
 #include <iostream>
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "maze.h"
 #include "solvers.h"
@@ -13,7 +13,7 @@ namespace mazes {
     using NodePtr = std::shared_ptr<Node>;
 
     namespace {
-        std::list<NodePtr> reconstructPath(std::map<NodePtr, NodePtr> pathMap, NodePtr end) {
+        std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> pathMap, NodePtr end) {
             std::list<NodePtr> path;
             NodePtr current = end;
             while (current) {
@@ -29,8 +29,8 @@ namespace mazes {
         const std::list<NodePtr> graph = maze.getGraph();
 
         std::deque<NodePtr> queue;
-        std::set<NodePtr> visited;
-        std::map<NodePtr, NodePtr> pathMap;
+        std::unordered_set<NodePtr> visited;
+        std::unordered_map<NodePtr, NodePtr> pathMap;
 
         queue.push_back(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
@@ -61,8 +61,8 @@ namespace mazes {
         const std::list<NodePtr> graph = maze.getGraph();
 
         std::deque<NodePtr> stack;
-        std::set<NodePtr> visited;
-        std::map<NodePtr, NodePtr> pathMap;
+        std::unordered_set<NodePtr> visited;
+        std::unordered_map<NodePtr, NodePtr> pathMap;
 
         stack.push_front(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
