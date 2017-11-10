@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <deque>
 #include <iostream>
+#include <limits>
+#include <queue>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -92,6 +94,43 @@ namespace mazes {
 
     std::list<NodePtr> solveDijkstra(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
+
+        std::unordered_map<NodePtr, int> costs;
+        std::unordered_map<NodePtr, NodePtr> paths;
+        paths[start] = NodePtr{nullptr};
+
+        auto compare = [&costs](auto const& one, auto const& two) {
+            return costs[one] > costs[two];
+        };
+        // std::priority_queue<NodePtr, std::vector<NodePtr>, decltype(compare)> queue(compare);
+        std::vector<NodePtr> queue;
+
+        for (NodePtr const& node : graph) {
+            costs[node] = std::numeric_limits<int>::max();
+            queue.push_back(node);
+        }
+        costs[start] = 0;
+        std::make_heap(queue.begin(), queue.end(), compare);
+
+        while (!queue.empty()) {
+            NodePtr current = queue.front();
+            std::pop_heap(queue.begin(), queue.end(), compare);
+            queue.pop_back();
+            if (current == end) {
+                return reconstructPath(paths, current);
+            }
+
+            int currentCost = costs[current];
+            for (Edge edge : current->edges) {
+                int newCost = currentCost + edge.cost;
+                if (newCost < costs[edge.node]) {
+                    costs[edge.node] = newCost;
+                    paths[edge.node] = current;
+                    std::make_heap(queue.begin(), queue.end(), compare);
+                }
+            }
+        }
+
         return graph;
     }
 
