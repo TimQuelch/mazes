@@ -13,12 +13,13 @@ namespace mazes {
     using NodePtr = std::shared_ptr<Node>;
 
     namespace {
-        std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> pathMap, NodePtr end) {
+        std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> paths,
+                                           NodePtr end) {
             std::list<NodePtr> path;
             NodePtr current = end;
             while (current) {
                 path.push_back(current);
-                current = pathMap[current];
+                current = paths[current];
             }
             path.reverse();
             return path;
@@ -30,23 +31,23 @@ namespace mazes {
 
         std::deque<NodePtr> queue;
         std::unordered_set<NodePtr> visited;
-        std::unordered_map<NodePtr, NodePtr> pathMap;
+        std::unordered_map<NodePtr, NodePtr> paths;
 
         queue.push_back(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
-        pathMap[start] = NodePtr{nullptr};
+        paths[start] = NodePtr{nullptr};
 
         while (!queue.empty()) {
             NodePtr current = queue.front();
             queue.pop_front();
             if (current == end) {
-                return reconstructPath(pathMap, current);
+                return reconstructPath(paths, current);
             }
 
             for (Edge edge : current->edges) {
                 if (std::find(visited.begin(), visited.end(), edge.node) == visited.end()) {
                     if (std::find(queue.begin(), queue.end(), edge.node) == queue.end()) {
-                        pathMap[edge.node] = current;
+                        paths[edge.node] = current;
                         queue.push_back(edge.node);
                     }
                     visited.insert(current);
@@ -62,23 +63,23 @@ namespace mazes {
 
         std::deque<NodePtr> stack;
         std::unordered_set<NodePtr> visited;
-        std::unordered_map<NodePtr, NodePtr> pathMap;
+        std::unordered_map<NodePtr, NodePtr> paths;
 
         stack.push_front(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
-        pathMap[start] = NodePtr{nullptr};
+        paths[start] = NodePtr{nullptr};
 
         while (!stack.empty()) {
             NodePtr current = stack.front();
             stack.pop_front();
             if (current == end) {
-                return reconstructPath(pathMap, current);
+                return reconstructPath(paths, current);
             }
 
             for (Edge edge : current->edges) {
                 if (std::find(visited.begin(), visited.end(), edge.node) == visited.end()) {
                     if (std::find(stack.begin(), stack.end(), edge.node) == stack.end()) {
-                        pathMap[edge.node] = current;
+                        paths[edge.node] = current;
                         stack.push_front(edge.node);
                     }
                     visited.insert(current);
