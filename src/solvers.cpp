@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "fibonacci-queue.h"
 #include "maze.h"
 #include "solvers.h"
 
@@ -124,7 +125,7 @@ namespace mazes {
         auto compare = [](queueNode const& one, queueNode const& two) {
             return one.second > two.second;
         };
-        std::priority_queue<queueNode, std::vector<queueNode>, decltype(compare)> queue(compare);
+        FibonacciQueue<queueNode, decltype(compare)> queue(compare);
 
         for (NodePtr const& node : graph) {
             costs[node] = std::numeric_limits<int>::max();
