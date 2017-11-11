@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <deque>
+#include <exception>
 #include <iostream>
 #include <limits>
 #include <queue>
@@ -72,8 +73,7 @@ namespace mazes {
                 }
             }
         }
-        std::cout << "Path not found\n";
-        return {};
+        throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using depth first search
@@ -109,8 +109,7 @@ namespace mazes {
                 }
             }
         }
-        std::cout << "Path not found\n";
-        return {};
+        throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using Djikstra's algorithm
@@ -152,9 +151,7 @@ namespace mazes {
                 }
             }
         }
-
-        std::cout << "Path not found\n";
-        return {};
+        throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using A*
