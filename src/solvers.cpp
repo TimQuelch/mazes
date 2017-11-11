@@ -26,6 +26,17 @@ namespace mazes {
             path.reverse();
             return path;
         }
+
+        template <typename Container>
+        bool contains(Container container, typename Container::value_type const& value) {
+            return std::find(container.begin(), container.end(), value) != container.end();
+        }
+
+        //template <>
+        template <typename T>
+        bool contains(std::unordered_set<T> container, T const& value) {
+            return container.find(value) != container.end();
+        }
     } // namespace
 
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
@@ -47,8 +58,8 @@ namespace mazes {
             }
 
             for (Edge edge : current->edges) {
-                if (std::find(visited.begin(), visited.end(), edge.node) == visited.end()) {
-                    if (std::find(queue.begin(), queue.end(), edge.node) == queue.end()) {
+                if (!contains(visited, edge.node)) {
+                    if (!contains(queue, edge.node)) {
                         paths[edge.node] = current;
                         queue.push_back(edge.node);
                     }
@@ -79,8 +90,8 @@ namespace mazes {
             }
 
             for (Edge edge : current->edges) {
-                if (std::find(visited.begin(), visited.end(), edge.node) == visited.end()) {
-                    if (std::find(stack.begin(), stack.end(), edge.node) == stack.end()) {
+                if (!contains(visited, edge.node)) {
+                    if (!contains(stack, edge.node)) {
                         paths[edge.node] = current;
                         stack.push_front(edge.node);
                     }
