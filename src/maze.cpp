@@ -261,30 +261,19 @@ namespace mazes {
     }
 
     void Maze::writePngGraph(std::string_view filename) const {
-        std::vector<std::vector<bool>> graphGrid;
-        graphGrid.resize(size_);
-        for (int i = 0; i < size_; i++) {
-            graphGrid[i].resize(size_);
-            for (int j = 0; j < size_; j++) {
-                graphGrid[i][j] = false;
-            }
-        }
-
-        for (std::shared_ptr<Node> nodePtr : graph_) {
-            graphGrid[nodePtr->x][nodePtr->y] = true;
-        }
-
         png::image<png::rgb_pixel> image{size_, size_};
         for (int j = 0; j < size_; j++) {
             for (int i = 0; i < size_; i++) {
-                if (graphGrid[i][j]) {
-                    image[j][i] = png::rgb_pixel(255, 0, 0);
-                } else if (grid_[i][j]) {
+                if (grid_[i][j]) {
                     image[j][i] = png::rgb_pixel(255, 255, 255);
                 } else {
                     image[j][i] = png::rgb_pixel(0, 0, 0);
                 }
             }
+        }
+
+        for (std::shared_ptr<Node> nodePtr : graph_) {
+            image[nodePtr->y][nodePtr->x] = png::rgb_pixel(255, 0, 0);
         }
         image.write(filename.data());
     }
