@@ -15,6 +15,7 @@ namespace mazes {
     using NodePtr = std::shared_ptr<Node>;
 
     namespace {
+        // Reconstruct the path
         std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> paths,
                                            NodePtr end) {
             std::list<NodePtr> path;
@@ -32,13 +33,13 @@ namespace mazes {
             return std::find(container.begin(), container.end(), value) != container.end();
         }
 
-        //template <>
         template <typename T>
         bool contains(std::unordered_set<T> container, T const& value) {
             return container.find(value) != container.end();
         }
     } // namespace
 
+    // Solve the maze using breadth first search
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
 
@@ -46,6 +47,7 @@ namespace mazes {
         std::unordered_set<NodePtr> visited;
         std::unordered_map<NodePtr, NodePtr> paths;
 
+        // Add first node
         queue.push_back(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
         paths[start] = NodePtr{nullptr};
@@ -53,10 +55,13 @@ namespace mazes {
         while (!queue.empty()) {
             NodePtr current = queue.front();
             queue.pop_front();
+
+            // Return if path is found
             if (current == end) {
                 return reconstructPath(paths, current);
             }
 
+            // Process each of the connections
             for (Edge edge : current->edges) {
                 if (!contains(visited, edge.node)) {
                     if (!contains(queue, edge.node)) {
@@ -68,9 +73,10 @@ namespace mazes {
             }
         }
         std::cout << "Path not found\n";
-        return graph; // TODO shouldn't happen
+        return {};
     }
 
+    // Solve the maze using depth first search
     std::list<NodePtr> solveDfs(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
 
@@ -78,6 +84,7 @@ namespace mazes {
         std::unordered_set<NodePtr> visited;
         std::unordered_map<NodePtr, NodePtr> paths;
 
+        // Add first node
         stack.push_front(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
         paths[start] = NodePtr{nullptr};
@@ -85,10 +92,13 @@ namespace mazes {
         while (!stack.empty()) {
             NodePtr current = stack.front();
             stack.pop_front();
+
+            // Return if path is found
             if (current == end) {
                 return reconstructPath(paths, current);
             }
 
+            // Process each of the connections
             for (Edge edge : current->edges) {
                 if (!contains(visited, edge.node)) {
                     if (!contains(stack, edge.node)) {
@@ -100,9 +110,10 @@ namespace mazes {
             }
         }
         std::cout << "Path not found\n";
-        return graph;
+        return {};
     }
 
+    // Solve the maze using Djikstra's algorithm
     std::list<NodePtr> solveDijkstra(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
 
@@ -142,12 +153,14 @@ namespace mazes {
             }
         }
 
-        return graph;
+        std::cout << "Path not found\n";
+        return {};
     }
 
+    // Solve the maze using A*
     std::list<NodePtr> solveAstar(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
-        return graph;
+        return {};
     }
 
 } // namespace mazes
