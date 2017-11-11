@@ -73,13 +73,7 @@ namespace mazes {
 
             grid.resize(size);
             for (unsigned i = 0; i < size; i++) {
-                grid[i].resize(size);
-            }
-
-            for (unsigned i = 0; i < size; i++) {
-                for (unsigned j = 0; j < size; j++) {
-                    grid[i][j] = false;
-                }
+                grid[i].resize(size, false);
             }
 
             Point init(randInt(0, (size - 2) / 2) * 2 + 1, randInt(0, (size - 2) / 2) * 2 + 1);
