@@ -6,10 +6,19 @@
 #include <memory>
 
 namespace mazes {
+    template <typename T, typename P>
+    class FibonacciQueue;
+
     namespace detail {
-        template <typename Node>
-        void reduceRoots(std::list<std::unique_ptr<Node>>& roots) {
-            std::map<int, typename std::list<std::unique_ptr<Node>>::iterator> trees;
+        template <typename T, typename P>
+        using FibNode = typename FibonacciQueue<T, P>::Node;
+
+        template <typename T, typename P>
+        using FibNodeList = std::list<std::unique_ptr<FibNode<T, P>>>;
+
+        template <typename T, typename P>
+        void reduceRoots(FibNodeList<T, P>& roots) {
+            std::map<int, typename FibNodeList<T, P>::iterator> trees;
             for (auto it = roots.begin(); it != roots.end(); it++) {
                 if (trees[(*it)->degree]) {
                     auto other = trees[(*it)->degree];
@@ -27,7 +36,7 @@ namespace mazes {
         }
     } // namespace detail
 
-    template <typename T, typename Priority>
+    template <typename T, typename P>
     class FibonacciQueue {
     public:
         T const& top() const { return (*minVal_)->value; }
@@ -57,11 +66,11 @@ namespace mazes {
     private:
         struct Node {
             T value;
-            Priority priority;
+            P priority;
             int degree;
             std::list<std::unique_ptr<Node>> children;
 
-            Node(T const& value, Priority priority)
+            Node(T const& value, P priority)
                 : value{value}
                 , priority{priority}
                 , degree{0}
