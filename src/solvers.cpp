@@ -1,9 +1,9 @@
 #include <algorithm>
-#include <deque>
 #include <exception>
 #include <iostream>
 #include <limits>
 #include <queue>
+#include <stack>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -44,32 +44,32 @@ namespace mazes {
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
 
-        std::deque<NodePtr> queue;
+        std::queue<NodePtr> queue;
         std::unordered_set<NodePtr> visited;
         std::unordered_map<NodePtr, NodePtr> paths;
 
         // Add first node
-        queue.push_back(*(std::find_if(
+        queue.push(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
         paths[start] = NodePtr{nullptr};
 
         while (!queue.empty()) {
             NodePtr current = queue.front();
-            queue.pop_front();
+            queue.pop();
 
-            // Return if path is found
-            if (current == end) {
-                return detail::reconstructPath(paths, current);
-            }
+            if (!detail::contains(visited, current)) {
+                // Return if path is found
+                if (current == end) {
+                    return detail::reconstructPath(paths, current);
+                }
 
-            // Process each of the connections
-            for (Edge edge : current->edges) {
-                if (!detail::contains(visited, edge.node)) {
-                    if (!detail::contains(queue, edge.node)) {
+                // Process each of the connections
+                for (Edge edge : current->edges) {
+                    if (!detail::contains(visited, edge.node)) {
                         paths[edge.node] = current;
-                        queue.push_back(edge.node);
+                        queue.push(edge.node);
+                        visited.insert(current);
                     }
-                    visited.insert(current);
                 }
             }
         }
@@ -80,32 +80,32 @@ namespace mazes {
     std::list<NodePtr> solveDfs(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
 
-        std::deque<NodePtr> stack;
+        std::stack<NodePtr> stack;
         std::unordered_set<NodePtr> visited;
         std::unordered_map<NodePtr, NodePtr> paths;
 
         // Add first node
-        stack.push_front(*(std::find_if(
+        stack.push(*(std::find_if(
             graph.begin(), graph.end(), [start](auto const& n) { return n == start; })));
         paths[start] = NodePtr{nullptr};
 
         while (!stack.empty()) {
-            NodePtr current = stack.front();
-            stack.pop_front();
+            NodePtr current = stack.top();
+            stack.pop();
 
-            // Return if path is found
-            if (current == end) {
-                return detail::reconstructPath(paths, current);
-            }
+            if (!detail::contains(visited, current)) {
+                // Return if path is found
+                if (current == end) {
+                    return detail::reconstructPath(paths, current);
+                }
 
-            // Process each of the connections
-            for (Edge edge : current->edges) {
-                if (!detail::contains(visited, edge.node)) {
-                    if (!detail::contains(stack, edge.node)) {
+                // Process each of the connections
+                for (Edge edge : current->edges) {
+                    if (!detail::contains(visited, edge.node)) {
                         paths[edge.node] = current;
-                        stack.push_front(edge.node);
+                        stack.push(edge.node);
+                        visited.insert(current);
                     }
-                    visited.insert(current);
                 }
             }
         }
