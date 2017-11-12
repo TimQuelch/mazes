@@ -161,9 +161,14 @@ namespace mazes {
         const std::list<NodePtr> graph = maze.getGraph();
 
         std::unordered_map<NodePtr, int> costs;
-        std::unordered_map<NodePtr, int> distances;
         std::unordered_map<NodePtr, NodePtr> paths;
         paths[start] = NodePtr{nullptr};
+
+        auto distance = [&end](NodePtr const& node) -> int {
+            static const int ex = end->x;
+            static const int ey = end->y;
+            return ex - node->x + ey - node->y;
+        };
 
         using queueNode = std::pair<NodePtr, int>;
         auto compare = [](queueNode const& one, queueNode const& two) {
@@ -173,17 +178,16 @@ namespace mazes {
 
         for (NodePtr const& node : graph) {
             costs[node] = std::numeric_limits<int>::max();
-            distances[node] = std::abs(end->x - node->x) + std::abs(end->y - node->y);
         }
         costs[start] = 0;
-        queue.push(std::make_pair(start, costs[start] + distances[start]));
+        queue.push(std::make_pair(start, costs[start] + distance(start)));
 
         while (!queue.empty()) {
             NodePtr current;
             int poppedCost;
             std::tie(current, poppedCost) = queue.top();
             queue.pop();
-            if (poppedCost == costs[current] + distances[current]) {
+            if (poppedCost == costs[current] + distance(current)) {
                 if (current == end) {
                     return detail::reconstructPath(paths, current);
                 }
@@ -194,7 +198,7 @@ namespace mazes {
                     if (newCost < costs[edge.node]) {
                         costs[edge.node] = newCost;
                         paths[edge.node] = current;
-                        queue.push(std::make_pair(edge.node, newCost + distances[edge.node]));
+                        queue.push(std::make_pair(edge.node, newCost + distance(edge.node)));
                     }
                 }
             }
