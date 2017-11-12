@@ -36,6 +36,10 @@ namespace mazes {
 
         void push(T const& value, int priority) {
             roots_.push_back(std::make_unique<Node>(value, priority));
+            auto newNode = --(roots_.end());
+            if (*newNode < *minVal_) {
+                minVal_ = newNode;
+            }
         }
 
         void pop() {
