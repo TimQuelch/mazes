@@ -159,6 +159,47 @@ namespace mazes {
     // Solve the maze using A*
     std::list<NodePtr> solveAstar(Maze const& maze, NodePtr start, NodePtr end) {
         const std::list<NodePtr> graph = maze.getGraph();
+
+        std::unordered_map<NodePtr, int> costs;
+        std::unordered_map<NodePtr, int> distances;
+        std::unordered_map<NodePtr, NodePtr> paths;
+        paths[start] = NodePtr{nullptr};
+
+        using queueNode = std::pair<NodePtr, int>;
+        auto compare = [](queueNode const& one, queueNode const& two) {
+            return one.second > two.second;
+        };
+        std::priority_queue<queueNode, std::vector<queueNode>, decltype(compare)> queue(compare);
+
+        for (NodePtr const& node : graph) {
+            costs[node] = std::numeric_limits<int>::max();
+            distances[node] = std::abs(end->x - node->x) + std::abs(end->y - node->y);
+        }
+        costs[start] = 0;
+        queue.push(std::make_pair(start, costs[start] + distances[start]));
+
+        while (!queue.empty()) {
+            NodePtr current;
+            int poppedCost;
+            std::tie(current, poppedCost) = queue.top();
+            queue.pop();
+            if (poppedCost == costs[current] + distances[current]) {
+                if (current == end) {
+                    return detail::reconstructPath(paths, current);
+                }
+
+                int currentCost = costs[current];
+                for (Edge edge : current->edges) {
+                    int newCost = currentCost + edge.cost;
+                    if (newCost < costs[edge.node]) {
+                        costs[edge.node] = newCost;
+                        paths[edge.node] = current;
+                        queue.push(std::make_pair(edge.node, newCost + distances[edge.node]));
+                    }
+                }
+            }
+        }
+        throw std::runtime_error{"Path not found"};
         return {};
     }
 
