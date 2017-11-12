@@ -1,9 +1,11 @@
 #ifndef MAZES_FIBONACCI_QUEUE_H
 #define MAZES_FIBONACCI_QUEUE_H
 
+#include <algorithm>
 #include <list>
 #include <map>
 #include <memory>
+#include <queue>
 
 namespace mazes {
     template <typename T, typename P>
@@ -34,6 +36,23 @@ namespace mazes {
                 }
             }
         }
+
+        template <typename T, typename P>
+        typename FibNodeList<T, P>::iterator findNode(FibNodeList<T, P> const& nodes,
+                                                      T const& value) {
+            static auto equal = [&value](auto const& node) { return node->value == value; };
+            std::queue<FibNodeList<T, P> const&> nodeLists;
+            nodeLists.push(nodes);
+            while (!nodeLists.empty()) {
+                auto const& list = nodeLists.front();
+                nodeLists.pop();
+                auto it = std::find_if(list.begin(), list.end(), equal);
+                if (it != list.end()) {
+                    return it;
+                }
+            }
+            return nodes.end();
+        }
     } // namespace detail
 
     template <typename T, typename P>
@@ -62,6 +81,8 @@ namespace mazes {
                 }
             }
         }
+
+        void decrease(T const& value, P newPriority) { auto key = findNode(roots_, value); }
 
     private:
         struct Node {
