@@ -1,7 +1,6 @@
 #ifndef MAZES_FIBONACCI_QUEUE_H
 #define MAZES_FIBONACCI_QUEUE_H
 
-#include <cstddef>
 #include <list>
 #include <map>
 #include <memory>
@@ -28,14 +27,16 @@ namespace mazes {
         }
     } // namespace detail
 
-    template <typename T>
+    template <typename T, typename Priority>
     class FibonacciQueue {
     public:
         T const& top() const { return (*minVal_)->value; }
         bool empty() const { return false; } // TODO
         size_t size() const { return 0; }    // TODO
 
-        void push(T const& value) { roots_.push_back(std::make_unique<Node>(value)); }
+        void push(T const& value, int priority) {
+            roots_.push_back(std::make_unique<Node>(value, priority));
+        }
 
         void pop() {
             roots_.splice(roots_.begin(), (*minVal_)->children);
@@ -52,11 +53,11 @@ namespace mazes {
     private:
         struct Node {
             T value;
-            int priority;
+            Priority priority;
             int degree;
             std::list<std::unique_ptr<Node>> children;
 
-            Node(T const& value, int priority)
+            Node(T const& value, Priority priority)
                 : value{value}
                 , priority{priority}
                 , degree{0}
