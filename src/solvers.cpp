@@ -120,34 +120,36 @@ namespace mazes {
         std::unordered_map<NodePtr, NodePtr> paths;
         paths[start] = NodePtr{nullptr};
 
-        auto compare = [&costs](auto const& one, auto const& two) {
-            return costs[one] > costs[two];
+        using queueNode = std::pair<NodePtr, int>;
+        auto compare = [](queueNode const& one, queueNode const& two) {
+            return one.second > two.second;
         };
-        // std::priority_queue<NodePtr, std::vector<NodePtr>, decltype(compare)> queue(compare);
-        std::vector<NodePtr> queue;
+        std::priority_queue<queueNode, std::vector<queueNode>, decltype(compare)> queue(compare);
 
         for (NodePtr const& node : graph) {
             costs[node] = std::numeric_limits<int>::max();
-            queue.push_back(node);
         }
         costs[start] = 0;
-        std::make_heap(queue.begin(), queue.end(), compare);
+        queue.push(std::make_pair(start, costs[start]));
 
         while (!queue.empty()) {
-            NodePtr current = queue.front();
-            std::pop_heap(queue.begin(), queue.end(), compare);
-            queue.pop_back();
-            if (current == end) {
-                return detail::reconstructPath(paths, current);
-            }
+            NodePtr current;
+            int poppedCost;
+            std::tie(current, poppedCost) = queue.top();
+            queue.pop();
+            if (poppedCost == costs[current]) {
+                if (current == end) {
+                    return detail::reconstructPath(paths, current);
+                }
 
-            int currentCost = costs[current];
-            for (Edge edge : current->edges) {
-                int newCost = currentCost + edge.cost;
-                if (newCost < costs[edge.node]) {
-                    costs[edge.node] = newCost;
-                    paths[edge.node] = current;
-                    std::make_heap(queue.begin(), queue.end(), compare);
+                int currentCost = costs[current];
+                for (Edge edge : current->edges) {
+                    int newCost = currentCost + edge.cost;
+                    if (newCost < costs[edge.node]) {
+                        costs[edge.node] = newCost;
+                        paths[edge.node] = current;
+                        queue.push(std::make_pair(edge.node, newCost));
+                    }
                 }
             }
         }
