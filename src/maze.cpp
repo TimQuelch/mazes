@@ -11,7 +11,7 @@
 #include "maze.h"
 
 namespace mazes {
-    namespace {
+    namespace detail {
         // Holds the x y coordinates of a point in the maze
         struct Point {
             int x;
@@ -218,13 +218,13 @@ namespace mazes {
 
             return graph;
         }
-    } // namespace
+    } // namespace detail
 
     // Construct maze with given size. Generate grid and graph
     Maze::Maze(unsigned size, float loopFactor)
         : size_{size}
-        , grid_{generateGrid(size, loopFactor)}
-        , graph_{generateGraph(grid_)} {}
+        , grid_{detail::generateGrid(size, loopFactor)}
+        , graph_{detail::generateGraph(grid_)} {}
 
     // Print the maze to stdout
     void Maze::print() const {
@@ -336,10 +336,11 @@ namespace mazes {
         }
 
         // Write path
-        Point prev = {path.front()->x, path.front()->y};
+        detail::Point prev = {path.front()->x, path.front()->y};
         for (auto const& node : path) {
-            Point start = {std::min(prev.x, node->x), std::min(prev.y, node->y)};
-            Point end = {std::max(prev.x + 1, node->x + 1), std::max(prev.y + 1, node->y + 1)};
+            detail::Point start = {std::min(prev.x, node->x), std::min(prev.y, node->y)};
+            detail::Point end = {std::max(prev.x + 1, node->x + 1),
+                                 std::max(prev.y + 1, node->y + 1)};
             for (int i = start.x; i != end.x; i++) {
                 for (int j = start.y; j != end.y; j++) {
                     image[j][i] = png::rgb_pixel(255, 0, 0);

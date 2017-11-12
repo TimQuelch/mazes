@@ -15,7 +15,7 @@ namespace mazes {
     using Edge = Maze::Edge;
     using NodePtr = std::shared_ptr<Node>;
 
-    namespace {
+    namespace detail {
         // Reconstruct the path
         std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> paths,
                                            NodePtr end) {
@@ -38,7 +38,7 @@ namespace mazes {
         bool contains(std::unordered_set<T> container, T const& value) {
             return container.find(value) != container.end();
         }
-    } // namespace
+    } // namespace detail
 
     // Solve the maze using breadth first search
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
@@ -59,13 +59,13 @@ namespace mazes {
 
             // Return if path is found
             if (current == end) {
-                return reconstructPath(paths, current);
+                return detail::reconstructPath(paths, current);
             }
 
             // Process each of the connections
             for (Edge edge : current->edges) {
-                if (!contains(visited, edge.node)) {
-                    if (!contains(queue, edge.node)) {
+                if (!detail::contains(visited, edge.node)) {
+                    if (!detail::contains(queue, edge.node)) {
                         paths[edge.node] = current;
                         queue.push_back(edge.node);
                     }
@@ -95,13 +95,13 @@ namespace mazes {
 
             // Return if path is found
             if (current == end) {
-                return reconstructPath(paths, current);
+                return detail::reconstructPath(paths, current);
             }
 
             // Process each of the connections
             for (Edge edge : current->edges) {
-                if (!contains(visited, edge.node)) {
-                    if (!contains(stack, edge.node)) {
+                if (!detail::contains(visited, edge.node)) {
+                    if (!detail::contains(stack, edge.node)) {
                         paths[edge.node] = current;
                         stack.push_front(edge.node);
                     }
@@ -138,7 +138,7 @@ namespace mazes {
             std::pop_heap(queue.begin(), queue.end(), compare);
             queue.pop_back();
             if (current == end) {
-                return reconstructPath(paths, current);
+                return detail::reconstructPath(paths, current);
             }
 
             int currentCost = costs[current];
