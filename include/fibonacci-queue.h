@@ -7,6 +7,27 @@
 #include <memory>
 
 namespace mazes {
+    namespace detail {
+        template <typename Node>
+        void reduceRoots(std::list<std::unique_ptr<Node>>& roots) {
+            std::map<int, typename std::list<std::unique_ptr<Node>>::iterator> trees;
+            for (auto it = roots.begin(); it != roots.end(); it++) {
+                if (trees[(*it)->degree]) {
+                    auto other = trees[(*it)->degree];
+                    trees[(*it)->degree] = nullptr;
+                    if (*other < *it) {
+                        std::swap(*it, *other);
+                    }
+                    (*it)->children.splice((*it)->children.end(), roots, other);
+                    (*it)->degree++;
+                    it--;
+                } else {
+                    trees[(*it)->degree] = it;
+                }
+            }
+        }
+    } // namespace detail
+
     template <typename T>
     class FibonacciQueue {
     public:
@@ -19,7 +40,7 @@ namespace mazes {
         void pop() {
             roots_.splice(roots_.begin(), (*minVal_)->children);
             roots_.erase(minVal_);
-            reduceRoots(roots_);
+            detail::reduceRoots(roots_);
             minVal_ = roots_.begin();
             for (auto it = roots_.begin(); it != roots_.end(); it++) {
                 if (*it < *minVal_) {
@@ -47,25 +68,6 @@ namespace mazes {
         std::list<std::unique_ptr<Node>> roots_;
         typename std::list<std::unique_ptr<Node>>::iterator minVal_;
     };
-
-    template <typename Node>
-    void reduceRoots(std::list<std::unique_ptr<Node>>& roots) {
-        std::map<int, typename std::list<std::unique_ptr<Node>>::iterator> trees;
-        for (auto it = roots.begin(); it != roots.end(); it++) {
-            if (trees[(*it)->degree]) {
-                auto other = trees[(*it)->degree];
-                trees[(*it)->degree] = nullptr;
-                if (*other < *it) {
-                    std::swap(*it, *other);
-                }
-                (*it)->children.splice((*it)->children.end(), roots, other);
-                (*it)->degree++;
-                it--;
-            } else {
-                trees[(*it)->degree] = it;
-            }
-        }
-    }
 } // namespace mazes
 
 #endif
