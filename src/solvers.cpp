@@ -204,7 +204,5 @@ namespace mazes {
             }
         }
         throw std::runtime_error{"Path not found"};
-        return {};
     }
-
 } // namespace mazes
