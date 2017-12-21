@@ -1,3 +1,5 @@
+/// \author Tim Quelch
+
 #include <chrono>
 #include <iostream>
 

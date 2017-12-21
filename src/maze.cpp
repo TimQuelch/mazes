@@ -1,3 +1,5 @@
+/// \author Tim Quelch
+
 #include <algorithm>
 #include <chrono>
 #include <cmath>
@@ -12,20 +14,28 @@
 
 namespace mazes {
     namespace detail {
-        // Holds the x y coordinates of a point in the maze
+        /// Holds the x y coordinates of a point in the maze
         struct Point {
-            int x;
-            int y;
+            int x; ///< x coordinate
+            int y; ///< y coordinate
 
+            /// Construct with given values
             Point(int x = 0, int y = 0)
                 : x{x}
                 , y{y} {}
 
+            /// Orders points lexicographically by x coordinate then y coordinate
+            /// \param rhs Another point
+            /// \returns true if the point is lexicographically less than the other by x then y
             bool operator<(const Point& rhs) { return std::tie(x, y) < std::tie(rhs.x, rhs.y); }
+
+            /// Points are equal if both x and y are equal
+            /// \param rhs Another point
+            /// \returns true if both x and y are equal
             bool operator==(const Point& rhs) { return x == rhs.x && y == rhs.y; }
         };
 
-        // Generates a random integer between a and b
+        /// Generates a random integer between a and b
         int randInt(int a, int b) {
             static long seed = std::chrono::system_clock::now().time_since_epoch().count();
             static std::default_random_engine randEngine{seed};
@@ -33,13 +43,20 @@ namespace mazes {
             return dist(randEngine);
         }
 
-        // Checks if a coordinate is within the boundaries of the maze
+        /// Checks if a coordinate is within the boundaries of the maze. That is, if it x and y are
+        /// greater than 1 and less than size - 1
+        /// \param p A Point
+        /// \param gridSize the length of the side of the maze
+        /// \returns true if the point is within the walls of the maze
         bool isLegal(Point p, unsigned gridSize) {
             return p.x > 0 && p.x < gridSize - 1 && p.y > 0 && p.y < gridSize - 1;
         }
 
-        // Checks if point is a wall that can be removed to form a loop. Wall must be a vertical or
-        // horizontal wall, not a T wall, or X wall
+        /// Checks if point is a wall that can be removed to form a loop. Wall must be a vertical or
+        /// horizontal wall, not a T wall, or X wall.
+        /// \param grid Grid of the maze
+        /// \param p A Point
+        /// \returns true if the point can be removed to form a loop
         bool isWall(const std::vector<std::vector<bool>>& grid, Point p) {
             int countWalls = 0;
             countWalls += grid[p.x - 1][p.y] ? 0 : 1;
@@ -52,7 +69,9 @@ namespace mazes {
             return wall && (nsWall || esWall) && !(nsWall && esWall) && (countWalls < 3);
         }
 
-        // Returns a list the points of the neighbours of a point
+        /// Returns a list the points of the neighbours of a point. Neighbours are in the four
+        /// cardinal directions and are a distance of two away. They are two away so that the wall
+        /// inbetween is jumped.
         std::list<Point> getNeighbours(unsigned gridSize, Point p) {
             std::list<Point> newNodes;
             newNodes.push_back({p.x - 2, p.y});
@@ -63,7 +82,9 @@ namespace mazes {
             return newNodes;
         }
 
-        // Returns and removes a random point from a list
+        /// Returns and removes a random point from a list
+        /// \param points Reference to a list of points. A random point is removed from this list
+        /// \returns The Point removed from the list
         Point popPoint(std::list<Point>& points) {
             unsigned index = randInt(0, points.size() - 1);
             auto it = points.begin();
@@ -75,24 +96,32 @@ namespace mazes {
             return p;
         }
 
-        // Check if a point is a horizontal corridor
+        /// Check if a point is a horizontal corridor. That is, it has corridors to the left and
+        /// right, and walls to the top and bottom
         bool isHCorridor(Point p, std::vector<std::vector<bool>> const& grid) {
             return grid[p.x - 1][p.y] && grid[p.x + 1][p.y] && !grid[p.x][p.y - 1] &&
                    !grid[p.x][p.y + 1];
         }
 
-        // Check if a point is a vertical corridor
+        /// Check if a point is a vertical corridor. That is, it has corridors to the top and
+        /// bottom, and walls to the left and right
         bool isVCorridor(Point p, std::vector<std::vector<bool>> const& grid) {
             return !grid[p.x - 1][p.y] && !grid[p.x + 1][p.y] && grid[p.x][p.y - 1] &&
                    grid[p.x][p.y + 1];
         }
 
-        // Calculate the manhatten distance between two points
+        /// Calculate the manhatten distance between two points
         int calcCost(Point one, Point two) {
             return std::abs(one.x - two.x) + std::abs(one.y - two.y);
         }
 
-        // Generate the grid of a maze
+        /// Generate the grid of a maze. There is an entrance in the top left, and an exit in the
+        /// bottom right.
+        /// \param size the length of the side of the maze
+        /// \param loopFactor the factor of loopiness in the maze. 0 means there is a single
+        /// solution, increasing increases number of solutions
+        /// \returns the grid of the maze. can be indexed with v[x][y]
+        /// \callgraph
         std::vector<std::vector<bool>> generateGrid(unsigned size, float loopFactor) {
             // Initialise grid
             std::vector<std::vector<bool>> grid;
@@ -146,7 +175,10 @@ namespace mazes {
             return grid;
         }
 
-        // Generate the graph of a maze from the grid
+        /// Generate the graph of a maze from the grid. The maze is sorted left to right, then top
+        /// to bottom, therefore the entrance is the first node, and the exit is the last node
+        /// \param grid The Maze grid to generate the graph from
+        /// \returns A list of Nodes that make up the graph of the maze
         std::list<std::shared_ptr<Maze::Node>>
         generateGraph(std::vector<std::vector<bool>> const& grid) {
             using Node = Maze::Node;

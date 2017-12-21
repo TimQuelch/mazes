@@ -1,3 +1,5 @@
+/// \author Tim Quelch
+
 #include <algorithm>
 #include <exception>
 #include <iostream>
@@ -11,12 +13,17 @@
 #include "solvers.h"
 
 namespace mazes {
+    /// \cond
     using Node = Maze::Node;
     using Edge = Maze::Edge;
     using NodePtr = std::shared_ptr<Node>;
+    /// \endcond
 
     namespace detail {
-        // Reconstruct the path
+        /// Reconstruct the path from the parent map and end point
+        /// \param paths Map of parent nodes. The value for each key is the node that preceded the key in the path
+        /// \param end The end node
+        /// \returns The list of nodes in the path, in order
         std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> paths,
                                            NodePtr end) {
             std::list<NodePtr> path;
@@ -29,16 +36,23 @@ namespace mazes {
             return path;
         }
 
+        /// Helper to test if container contains a value
+        /// \returns true if the container contains the value
         template <typename Container>
         bool contains(Container container, typename Container::value_type const& value) {
             return std::find(container.begin(), container.end(), value) != container.end();
         }
 
+        /// Checks if a unordered_set contains a value. Specialised overload, as this is much more
+        /// efficient that std::find
+        /// \returns true if the container contains the value
         template <typename T>
         bool contains(std::unordered_set<T> container, T const& value) {
             return container.find(value) != container.end();
         }
     } // namespace detail
+
+    /// \cond
 
     // Solve the maze using breadth first search
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
@@ -205,4 +219,5 @@ namespace mazes {
         }
         throw std::runtime_error{"Path not found"};
     }
+    /// \endcond
 } // namespace mazes
