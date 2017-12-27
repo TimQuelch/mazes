@@ -50,7 +50,7 @@ namespace mazes {
         /// \param p A Point
         /// \param gridSize the length of the side of the maze
         /// \returns true if the point is within the walls of the maze
-        bool isLegal(Point p, unsigned gridSize) {
+        bool isLegal(Point p, int gridSize) {
             return p.x > 0 && p.x < gridSize - 1 && p.y > 0 && p.y < gridSize - 1;
         }
 
@@ -90,7 +90,7 @@ namespace mazes {
         Point popPoint(std::list<Point>& points) {
             unsigned index = randInt(0, points.size() - 1);
             auto it = points.begin();
-            for (int i = 0; i < index; i++) {
+            for (unsigned i = 0; i < index; i++) {
                 it++;
             }
             Point p = *it;
@@ -286,7 +286,7 @@ namespace mazes {
         // Create grid where nodes are true
         std::vector<std::vector<bool>> graphGrid;
         graphGrid.resize(size_);
-        for (int i = 0; i < size_; i++) {
+        for (unsigned i = 0; i < size_; i++) {
             graphGrid[i].resize(size_, false);
         }
         for (std::shared_ptr<Node> nodePtr : graph_) {
@@ -318,8 +318,8 @@ namespace mazes {
     // Write the maze to PNG
     void Maze::writePng(std::string_view filename) const {
         png::image<png::rgb_pixel> image{size_, size_};
-        for (int j = 0; j < size_; j++) {
-            for (int i = 0; i < size_; i++) {
+        for (unsigned j = 0; j < size_; j++) {
+            for (unsigned i = 0; i < size_; i++) {
                 if (grid_[i][j]) {
                     image[j][i] = png::rgb_pixel(255, 255, 255);
                 } else {
@@ -335,8 +335,8 @@ namespace mazes {
         png::image<png::rgb_pixel> image{size_, size_};
 
         // Write maze
-        for (int j = 0; j < size_; j++) {
-            for (int i = 0; i < size_; i++) {
+        for (unsigned j = 0; j < size_; j++) {
+            for (unsigned i = 0; i < size_; i++) {
                 if (grid_[i][j]) {
                     image[j][i] = png::rgb_pixel(255, 255, 255);
                 } else {
@@ -359,8 +359,8 @@ namespace mazes {
         png::image<png::rgb_pixel> image{size_, size_};
 
         // Write maze
-        for (int j = 0; j < size_; j++) {
-            for (int i = 0; i < size_; i++) {
+        for (unsigned j = 0; j < size_; j++) {
+            for (unsigned i = 0; i < size_; i++) {
                 if (grid_[i][j]) {
                     image[j][i] = png::rgb_pixel(255, 255, 255);
                 } else {

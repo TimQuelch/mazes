@@ -47,11 +47,14 @@ namespace mazes {
                 return {255, 255, 0};
                 break;
             }
+            return {0, 0, 0};
         }
 
         void checkReturn(std::string const& message, int returnVal) {
             if (returnVal < 0) {
-                throw std::runtime_error{message + std::string{av_err2str(returnVal)}};
+                char err[AV_ERROR_MAX_STRING_SIZE];
+                av_strerror(returnVal, err, sizeof(err));
+                throw std::runtime_error{message + std::string{err}};
             }
         }
 
@@ -146,8 +149,7 @@ namespace mazes {
             }
         }
 
-        void
-        openVideo(AVFormatContext* outContext, AVCodecContext* codecContext, AVStream* stream) {
+        void openVideo(AVCodecContext* codecContext, AVStream* stream) {
             int ret = avcodec_open2(codecContext, codecContext->codec, NULL);
             checkReturn("Could not open codec: ", ret);
 
@@ -207,7 +209,7 @@ namespace mazes {
             size, size, vidSize, vidSize, AV_PIX_FMT_RGB24, AV_PIX_FMT_YUV420P);
         detail::configureCodecContext(
             codecContext_, codecId, outContext_->oformat, vidSize, vidSize);
-        detail::openVideo(outContext_, codecContext_, stream_);
+        detail::openVideo(codecContext_, stream_);
 
         av_dump_format(outContext_, 0, filename.data(), 1);
 
