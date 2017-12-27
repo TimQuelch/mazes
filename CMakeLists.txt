@@ -6,8 +6,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -O3 -pipe -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wpedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c99-extensions")
 
 find_package(PNG REQUIRED)
+
+find_library(FFMPEG_LIB_avformat avformat /usr/lib)
+find_library(FFMPEG_LIB_avcodec avcodec /usr/lib)
+find_library(FFMPEG_LIB_avutil avutil /usr/lib)
+find_library(FFMPEG_LIB_swscale swscale /usr/lib)
+find_library(FFMPEG_LIB_avdevice avdevice /usr/lib)
 
 include_directories(include)
 
