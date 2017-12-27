@@ -8,11 +8,16 @@
 namespace mazes {
     namespace detail {
 
+        /// Holds the RGB values for a pixel
         struct Pixel {
-            const unsigned char r;
-            const unsigned char g;
-            const unsigned char b;
+            const unsigned char r; ///< The red value of the pixel
+            const unsigned char g; ///< The green value of the pixel
+            const unsigned char b; ///< The blue value of the pixel
 
+            /// Construct the pixel with specified values
+            /// \param r The red value
+            /// \param g The green value
+            /// \param b The blue value
             Pixel(unsigned char r, unsigned char g, unsigned char b)
                 : r{r}
                 , g{g}

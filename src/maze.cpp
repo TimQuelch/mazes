@@ -20,6 +20,8 @@ namespace mazes {
             int y; ///< y coordinate
 
             /// Construct with given values
+            /// \param x The x coordinate
+            /// \param y The y coordinate
             Point(int x = 0, int y = 0)
                 : x{x}
                 , y{y} {}

@@ -9,8 +9,11 @@
 
 namespace mazes {
     /// Default length of the side of the maze. Mazes are always square
+    /// \relates Maze
     constexpr unsigned DEFAULT_MAZE_SIZE = 21;
+
     /// Default loop factor
+    /// \relates Maze
     constexpr float DEFAULT_LOOP_FACTOR = 0;
 
     /// Generated maze to be solved. Consists of both a grid and a graph of intersection
@@ -27,6 +30,9 @@ namespace mazes {
             std::list<Edge> edges; ///< All the edges in this node
 
             /// Construct a Node with given values
+            /// \param x The x coordinate of the Node
+            /// \param y The y coordinate of the Node
+            /// \param edges A list of the edges of this node
             Node(int x, int y, std::list<Edge> edges)
                 : x{x}
                 , y{y}
@@ -40,6 +46,8 @@ namespace mazes {
             const int cost;                   ///< The cost of the edge (distance)
 
             /// Construct an Edge with given values
+            /// \param node The Node that this edge links to
+            /// \param cost The cost to traverse this edge
             Edge(std::shared_ptr<Node> node, int cost)
                 : node{node}
                 , cost{cost} {}
@@ -53,6 +61,7 @@ namespace mazes {
         Maze(unsigned size = DEFAULT_MAZE_SIZE, float loopFactor = DEFAULT_LOOP_FACTOR);
 
         /// Get size of maze
+        /// \returns the length of the side of the Maze
         unsigned size() const { return size_; }
 
         /// Get the the grid of the Maze. Tiles that are true are corridors
