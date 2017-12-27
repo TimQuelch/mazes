@@ -7,13 +7,12 @@
 
 namespace mazes {
     namespace detail {
-        /// Store the RGB values for a pixel colour
-        struct Pixel {
-            const unsigned char r; ///< Luminence value
-            const unsigned char g; ///< Blue projection value
-            const unsigned char b; ///< Red projection value
 
-            /// Construct with specified RGB values
+        struct Pixel {
+            const unsigned char r;
+            const unsigned char g;
+            const unsigned char b;
+
             Pixel(unsigned char r, unsigned char g, unsigned char b)
                 : r{r}
                 , g{g}
@@ -193,7 +192,8 @@ namespace mazes {
         packet_ = detail::allocPacket();
         swsContext_ = detail::allocSwsContext(
             size, size, vidSize, vidSize, AV_PIX_FMT_RGB24, AV_PIX_FMT_YUV420P);
-        detail::configureCodecContext(codecContext_, codecId, outContext_->oformat, vidSize, vidSize);
+        detail::configureCodecContext(
+            codecContext_, codecId, outContext_->oformat, vidSize, vidSize);
         detail::openVideo(outContext_, codecContext_, stream_);
 
         av_dump_format(outContext_, 0, filename.data(), 1);

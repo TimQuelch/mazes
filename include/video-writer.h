@@ -16,12 +16,15 @@ extern "C" {
 
 namespace mazes {
     /// The default frame rate of produced videos.
+    /// \relates VideoWriter
     constexpr int FRAME_RATE = 100;
 
     /// Pixels per tile
+    /// \relates VideoWriter
     constexpr int PIXELS_PER_TILE = 4;
 
     /// Describes what type of maze tile.
+    /// \relates VideoWriter
     enum class Tile { wall, passage, visited, discovered };
 
     /// Writes stages of the solution of the maze to a video file.
