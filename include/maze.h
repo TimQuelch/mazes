@@ -47,10 +47,17 @@ namespace mazes {
 
         /// Construct a Maze with given values. Mazes are always square
         /// \param size Length of the side of the maze. This should be an odd number for good
-        /// results \param loopFactor Specifies the amount of loops created in the maze. 0 means
-        /// there is only one solution to the maze. Increasing it increases the number of possible
-        /// solutions
+        /// results
+        /// \param loopFactor Specifies the amount of loops created in the maze. 0 means there is
+        /// only one solution to the maze. Increasing it increases the number of possible solutions
         Maze(unsigned size = DEFAULT_MAZE_SIZE, float loopFactor = DEFAULT_LOOP_FACTOR);
+
+        /// Get size of maze
+        unsigned size() const { return size_; }
+
+        /// Get the the grid of the Maze. Tiles that are true are corridors
+        /// \returns The grid of the Maze
+        std::vector<std::vector<bool>> const& getGrid() const { return grid_; }
 
         /// Gets a list of all the Nodes in the maze graph
         /// \returns A list of all the Nodes in the maze graph
