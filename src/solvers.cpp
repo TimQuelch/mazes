@@ -11,6 +11,7 @@
 
 #include "maze.h"
 #include "solvers.h"
+#include "video-writer.h"
 
 namespace mazes {
     /// \cond
@@ -21,7 +22,8 @@ namespace mazes {
 
     namespace detail {
         /// Reconstruct the path from the parent map and end point
-        /// \param paths Map of parent nodes. The value for each key is the node that preceded the key in the path
+        /// \param paths Map of parent nodes. The value for each key is the node that preceded the
+        /// key in the path
         /// \param end The end node
         /// \returns The list of nodes in the path, in order
         std::list<NodePtr> reconstructPath(std::unordered_map<NodePtr, NodePtr> paths,

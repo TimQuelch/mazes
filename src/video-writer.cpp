@@ -3,7 +3,15 @@
 #include <cstdio>
 #include <stdexcept>
 
+#include "maze.h"
 #include "video-writer.h"
+
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/opt.h>
+#include <libswscale/swscale.h>
+}
 
 namespace mazes {
     namespace detail {

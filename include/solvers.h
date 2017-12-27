@@ -4,7 +4,8 @@
 #define MAZES_SOLVERS_H
 
 #include "maze.h"
-#include "video-writer.h"
+
+#include <string_view>
 
 namespace mazes {
     /// Solve maze using breadth first search.

@@ -5,16 +5,18 @@
 
 #include <string_view>
 
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
-#include <libavutil/opt.h>
-#include <libswscale/swscale.h>
-}
-
-#include "maze.h"
+// Forward declarations for AV lib types
+struct AVFormatContext;
+struct AVCodecContext;
+struct AVStream;
+struct AVFrame;
+struct AVPacket;
+struct SwsContext;
 
 namespace mazes {
+    // Forward declaration for Maze
+    class Maze;
+
     /// The default frame rate of produced videos.
     /// \relates VideoWriter
     constexpr int FRAME_RATE = 100;
