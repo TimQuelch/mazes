@@ -4,6 +4,7 @@
 #define MAZES_SOLVERS_H
 
 #include "maze.h"
+#include "video-writer.h"
 
 namespace mazes {
     /// Solve maze using breadth first search.
@@ -15,11 +16,23 @@ namespace mazes {
     std::list<std::shared_ptr<Maze::Node>>
     solveBfs(Maze const& maze, std::shared_ptr<Maze::Node> start, std::shared_ptr<Maze::Node> end);
 
+    /// Solve and write to a video file
+    std::list<std::shared_ptr<Maze::Node>> solveBfs(Maze const& maze,
+                                                    std::shared_ptr<Maze::Node> start,
+                                                    std::shared_ptr<Maze::Node> end,
+                                                    std::string_view filename);
+
     /// Solve maze using depth first search.
     /// \relates Maze
     /// \copydetails solveBfs()
     std::list<std::shared_ptr<Maze::Node>>
     solveDfs(Maze const& maze, std::shared_ptr<Maze::Node> start, std::shared_ptr<Maze::Node> end);
+
+    /// Solve and write to a video file
+    std::list<std::shared_ptr<Maze::Node>> solveDfs(Maze const& maze,
+                                                    std::shared_ptr<Maze::Node> start,
+                                                    std::shared_ptr<Maze::Node> end,
+                                                    std::string_view filename);
 
     /// Solve maze using Dijkstra's algorithm
     /// \relates Maze
@@ -28,12 +41,24 @@ namespace mazes {
                                                          std::shared_ptr<Maze::Node> start,
                                                          std::shared_ptr<Maze::Node> end);
 
+    /// Solve and write to a video file
+    std::list<std::shared_ptr<Maze::Node>> solveDijkstra(Maze const& maze,
+                                                         std::shared_ptr<Maze::Node> start,
+                                                         std::shared_ptr<Maze::Node> end,
+                                                         std::string_view filename);
+
     /// Solve maze using A*
     /// \relates Maze
     /// \copydetails solveBfs()
     std::list<std::shared_ptr<Maze::Node>> solveAstar(Maze const& maze,
                                                       std::shared_ptr<Maze::Node> start,
                                                       std::shared_ptr<Maze::Node> end);
+
+    /// Solve and write to a video file
+    std::list<std::shared_ptr<Maze::Node>> solveAstar(Maze const& maze,
+                                                      std::shared_ptr<Maze::Node> start,
+                                                      std::shared_ptr<Maze::Node> end,
+                                                      std::string_view filename);
 } // namespace mazes
 
 #endif

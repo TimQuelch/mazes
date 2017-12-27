@@ -56,7 +56,16 @@ namespace mazes {
 
     // Solve the maze using breadth first search
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
+        return solveBfs(maze, start, end, "");
+    }
+
+    std::list<std::shared_ptr<Maze::Node>> solveBfs(Maze const& maze,
+                                                    std::shared_ptr<Maze::Node> start,
+                                                    std::shared_ptr<Maze::Node> end,
+                                                    std::string_view filename) {
         const std::list<NodePtr> graph = maze.getGraph();
+        VideoWriter video{maze, filename};
+        const bool writeVideo{!filename.empty()};
 
         std::queue<NodePtr> queue;
         std::unordered_set<NodePtr> visited;
@@ -71,6 +80,10 @@ namespace mazes {
             NodePtr current = queue.front();
             queue.pop();
 
+            if (writeVideo) {
+                video.updateTile(current->x, current->y, Tile::visited);
+            }
+
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (current == end) {
@@ -83,16 +96,29 @@ namespace mazes {
                         paths[edge.node] = current;
                         queue.push(edge.node);
                         visited.insert(current);
+                        if (writeVideo) {
+                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                        }
                     }
                 }
             }
+            video.writeFrame();
         }
         throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using depth first search
     std::list<NodePtr> solveDfs(Maze const& maze, NodePtr start, NodePtr end) {
+        return solveDfs(maze, start, end, "");
+    }
+
+    // Solve the maze using depth first search
+    std::list<NodePtr>
+    solveDfs(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
         const std::list<NodePtr> graph = maze.getGraph();
+
+        VideoWriter video{maze, filename};
+        bool writeVideo{!filename.empty()};
 
         std::stack<NodePtr> stack;
         std::unordered_set<NodePtr> visited;
@@ -107,6 +133,10 @@ namespace mazes {
             NodePtr current = stack.top();
             stack.pop();
 
+            if (writeVideo) {
+                video.updateTile(current->x, current->y, Tile::visited);
+            }
+
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (current == end) {
@@ -119,16 +149,29 @@ namespace mazes {
                         paths[edge.node] = current;
                         stack.push(edge.node);
                         visited.insert(current);
+                        if (writeVideo) {
+                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                        }
                     }
                 }
             }
+            video.writeFrame();
         }
         throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using Djikstra's algorithm
     std::list<NodePtr> solveDijkstra(Maze const& maze, NodePtr start, NodePtr end) {
+        return solveDijkstra(maze, start, end, "");
+    }
+
+    // Solve the maze using Djikstra's algorithm
+    std::list<NodePtr>
+    solveDijkstra(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
         const std::list<NodePtr> graph = maze.getGraph();
+
+        VideoWriter video{maze, filename};
+        bool writeVideo{!filename.empty()};
 
         std::unordered_map<NodePtr, int> costs;
         std::unordered_map<NodePtr, NodePtr> paths;
@@ -151,6 +194,11 @@ namespace mazes {
             int poppedCost;
             std::tie(current, poppedCost) = queue.top();
             queue.pop();
+
+            if (writeVideo) {
+                video.updateTile(current->x, current->y, Tile::visited);
+            }
+
             if (poppedCost == costs[current]) {
                 if (current == end) {
                     return detail::reconstructPath(paths, current);
@@ -163,16 +211,30 @@ namespace mazes {
                         costs[edge.node] = newCost;
                         paths[edge.node] = current;
                         queue.push(std::make_pair(edge.node, newCost));
+
+                        if (writeVideo) {
+                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                        }
                     }
                 }
             }
+            video.writeFrame();
         }
         throw std::runtime_error{"Path not found"};
     }
 
     // Solve the maze using A*
     std::list<NodePtr> solveAstar(Maze const& maze, NodePtr start, NodePtr end) {
+        return solveAstar(maze, start, end, "");
+    }
+
+    // Solve the maze using A*
+    std::list<NodePtr>
+    solveAstar(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
         const std::list<NodePtr> graph = maze.getGraph();
+
+        VideoWriter video{maze, filename};
+        bool writeVideo{!filename.empty()};
 
         std::unordered_map<NodePtr, int> costs;
         std::unordered_map<NodePtr, NodePtr> paths;
@@ -201,6 +263,11 @@ namespace mazes {
             int poppedCost;
             std::tie(current, poppedCost) = queue.top();
             queue.pop();
+
+            if (writeVideo) {
+                video.updateTile(current->x, current->y, Tile::visited);
+            }
+
             if (poppedCost == costs[current] + distance(current)) {
                 if (current == end) {
                     return detail::reconstructPath(paths, current);
@@ -213,9 +280,13 @@ namespace mazes {
                         costs[edge.node] = newCost;
                         paths[edge.node] = current;
                         queue.push(std::make_pair(edge.node, newCost + distance(edge.node)));
+                        if (writeVideo) {
+                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                        }
                     }
                 }
             }
+            video.writeFrame();
         }
         throw std::runtime_error{"Path not found"};
     }
