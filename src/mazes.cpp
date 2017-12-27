@@ -11,31 +11,31 @@ using hr_clock = std::chrono::high_resolution_clock;
 int main() {
     std::cout << "Generating maze... " << std::flush;
     auto start = hr_clock::now();
-    mazes::Maze maze(201, 0.10);
+    mazes::Maze maze(101, 0.05);
     auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
     std::cout << "Solving using BFS... " << std::flush;
     start = hr_clock::now();
-    auto bfs = solveBfs(maze, maze.getStartNode(), maze.getEndNode());
+    auto bfs = solveBfs(maze, maze.getStartNode(), maze.getEndNode(), "vidBfs.webm");
     d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
     std::cout << "Solving using DFS... " << std::flush;
     start = hr_clock::now();
-    auto dfs = solveDfs(maze, maze.getStartNode(), maze.getEndNode());
+    auto dfs = solveDfs(maze, maze.getStartNode(), maze.getEndNode(), "vidDfs.webm");
     d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
     std::cout << "Solving using Dijkstra... " << std::flush;
     start = hr_clock::now();
-    auto dij = solveDijkstra(maze, maze.getStartNode(), maze.getEndNode());
+    auto dij = solveDijkstra(maze, maze.getStartNode(), maze.getEndNode(), "vidDij.webm");
     d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
     std::cout << "Solving using A*... " << std::flush;
     start = hr_clock::now();
-    auto ast = solveAstar(maze, maze.getStartNode(), maze.getEndNode());
+    auto ast = solveAstar(maze, maze.getStartNode(), maze.getEndNode(), "vidAst.webm");
     d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
