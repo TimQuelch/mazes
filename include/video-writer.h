@@ -23,7 +23,7 @@ namespace mazes {
 
     /// Pixels per tile
     /// \relates VideoWriter
-    constexpr int PIXELS_PER_TILE = 4;
+    constexpr int PIXELS_PER_TILE = 2;
 
     /// Describes what type of maze tile.
     /// \relates VideoWriter
@@ -63,6 +63,9 @@ namespace mazes {
         AVFrame* rgbFrame_;             ///< The RGB picture frame
         AVPacket* packet_;              ///< The stream packet
         struct SwsContext* swsContext_; ///< Conversion context
+
+        unsigned frameCounter_{0};
+        unsigned nUpdatesPerFrame_{2};
     };
 } // namespace mazes
 

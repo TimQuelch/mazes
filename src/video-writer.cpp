@@ -277,7 +277,9 @@ namespace mazes {
     }
 
     void VideoWriter::writeFrame() {
-        detail::writeVideoFrame(
-            outContext_, codecContext_, stream_, packet_, swsContext_, rgbFrame_, frame_);
+        if (frameCounter_++ % nUpdatesPerFrame_ == 0) {
+            detail::writeVideoFrame(
+                outContext_, codecContext_, stream_, packet_, swsContext_, rgbFrame_, frame_);
+        }
     }
 } // namespace mazes
