@@ -1,6 +1,7 @@
 /// \author Tim Quelch
 
 #include <algorithm>
+#include <cmath>
 #include <exception>
 #include <iostream>
 #include <limits>
@@ -266,7 +267,8 @@ namespace mazes {
         auto distance = [&end](NodePtr const& node) -> int {
             static const int ex = end->x;
             static const int ey = end->y;
-            return ex - node->x + ey - node->y;
+            // return 0.5 * (ex - node->x + ey - node->y);
+            return 1.3 * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) + (ey - node->y) * (ey - node->y)));
         };
 
         using queueNode = std::pair<NodePtr, int>;
