@@ -83,7 +83,10 @@ namespace mazes {
             queue.pop();
 
             if (writeVideo) {
-                video.updateTile(current->x, current->y, Tile::visited);
+                NodePtr prev = paths[current];
+                if (prev) {
+                    video.updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
+                }
             }
 
             if (!detail::contains(visited, current)) {
@@ -99,7 +102,11 @@ namespace mazes {
                         queue.push(edge.node);
                         visited.insert(current);
                         if (writeVideo) {
-                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                            video.updateLine(current->x,
+                                             current->y,
+                                             edge.node->x,
+                                             edge.node->y,
+                                             Tile::discovered);
                         }
                     }
                 }
@@ -136,7 +143,10 @@ namespace mazes {
             stack.pop();
 
             if (writeVideo) {
-                video.updateTile(current->x, current->y, Tile::visited);
+                NodePtr prev = paths[current];
+                if (prev) {
+                    video.updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
+                }
             }
 
             if (!detail::contains(visited, current)) {
@@ -152,7 +162,11 @@ namespace mazes {
                         stack.push(edge.node);
                         visited.insert(current);
                         if (writeVideo) {
-                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                            video.updateLine(current->x,
+                                             current->y,
+                                             edge.node->x,
+                                             edge.node->y,
+                                             Tile::discovered);
                         }
                     }
                 }
@@ -198,7 +212,10 @@ namespace mazes {
             queue.pop();
 
             if (writeVideo) {
-                video.updateTile(current->x, current->y, Tile::visited);
+                NodePtr prev = paths[current];
+                if (prev) {
+                    video.updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
+                }
             }
 
             if (poppedCost == costs[current]) {
@@ -215,7 +232,11 @@ namespace mazes {
                         queue.push(std::make_pair(edge.node, newCost));
 
                         if (writeVideo) {
-                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                            video.updateLine(current->x,
+                                             current->y,
+                                             edge.node->x,
+                                             edge.node->y,
+                                             Tile::discovered);
                         }
                     }
                 }
@@ -267,7 +288,10 @@ namespace mazes {
             queue.pop();
 
             if (writeVideo) {
-                video.updateTile(current->x, current->y, Tile::visited);
+                NodePtr prev = paths[current];
+                if (prev) {
+                    video.updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
+                }
             }
 
             if (poppedCost == costs[current] + distance(current)) {
@@ -283,7 +307,11 @@ namespace mazes {
                         paths[edge.node] = current;
                         queue.push(std::make_pair(edge.node, newCost + distance(edge.node)));
                         if (writeVideo) {
-                            video.updateTile(edge.node->x, edge.node->y, Tile::discovered);
+                            video.updateLine(current->x,
+                                             current->y,
+                                             edge.node->x,
+                                             edge.node->y,
+                                             Tile::discovered);
                         }
                     }
                 }

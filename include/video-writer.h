@@ -44,6 +44,14 @@ namespace mazes {
         /// \param tile the type of tile to update to
         void updateTile(int x, int y, Tile tile);
 
+        /// Update all tiles in a line. First coordinate (x1, y1) is not updated
+        /// \param x1 First x coordinate
+        /// \param y1 First y coordinate
+        /// \param x2 Second x coordinate
+        /// \param y2 Second y coordinate
+        /// \param tile The type of tile to update to
+        void updateLine(int x1, int y1, int x2, int y2, Tile tile);
+
         /// Write the current frame to the file
         void writeFrame();
 

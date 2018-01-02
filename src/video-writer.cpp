@@ -259,6 +259,23 @@ namespace mazes {
         rgbFrame_->data[0][y * rgbFrame_->linesize[0] + 3 * x + 2] = pixel.b;
     }
 
+    void VideoWriter::updateLine(int x1, int y1, int x2, int y2, Tile tile) {
+        if (x1 != x2 && y1 != y2) {
+            throw std::invalid_argument{"Either x coordinates or y coordinates must be equal"};
+        }
+        int startx = std::min(x1, x2);
+        int starty = std::min(y1, y2);
+        int endx = std::max(x1 + 1, x2 + 1);
+        int endy = std::max(y1 + 1, y2 + 1);
+        for (int i = startx; i != endx; i++) {
+            for (int j = starty; j != endy; j++) {
+                if (!(i == x1 && j == y1)) {
+                    updateTile(i, j, tile);
+                }
+            }
+        }
+    }
+
     void VideoWriter::writeFrame() {
         detail::writeVideoFrame(
             outContext_, codecContext_, stream_, packet_, swsContext_, rgbFrame_, frame_);
