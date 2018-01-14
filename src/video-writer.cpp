@@ -1,6 +1,7 @@
 /// \author Tim Quelch
 
 #include <cstdio>
+#include <sstream>
 #include <stdexcept>
 
 #include "maze.h"
@@ -87,11 +88,11 @@ namespace mazes {
             return format;
         }
 
-        AVStream* allocStream(AVFormatContext* outContext) {
+        AVStream* allocStream(AVFormatContext* outContext, int frameRate) {
             AVStream* stream = avformat_new_stream(outContext, NULL);
             checkAlloc("Could not allocate output stream", stream);
             stream->id = outContext->nb_streams - 1;
-            stream->time_base = AVRational{1, FRAME_RATE};
+            stream->time_base = AVRational{1, frameRate};
             return stream;
         }
 
@@ -130,12 +131,13 @@ namespace mazes {
                                    enum AVCodecID codecId,
                                    AVOutputFormat* format,
                                    int width,
-                                   int height) {
+                                   int height,
+                                   int frameRate) {
             context->codec_id = codecId;
             context->bit_rate = 400000;
             context->width = width;
             context->height = height;
-            context->time_base = AVRational{1, FRAME_RATE};
+            context->time_base = AVRational{1, frameRate};
             context->gop_size = 12;
             context->pix_fmt = AV_PIX_FMT_YUV420P;
             if (context->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
@@ -192,23 +194,26 @@ namespace mazes {
         }
     } // namespace detail
 
-    VideoWriter::VideoWriter(Maze const& maze, std::string_view filename) {
+    VideoWriter::VideoWriter(Maze const& maze,
+                             std::string_view filename,
+                             unsigned frameRate,
+                             unsigned pixelsPerTile) {
         av_register_all();
 
         const int size = maze.size();
-        const int vidSize = size * PIXELS_PER_TILE;
+        const int vidSize = size * pixelsPerTile;
         outContext_ = detail::allocFormatContext(filename);
         enum AVCodecID codecId = outContext_->oformat->video_codec;
         AVCodec* codec = detail::getCodec(codecId);
         codecContext_ = detail::allocCodecContext(codec);
-        stream_ = detail::allocStream(outContext_);
+        stream_ = detail::allocStream(outContext_, frameRate);
         frame_ = detail::allocFrame(vidSize, vidSize, AV_PIX_FMT_YUV420P);
         rgbFrame_ = detail::allocFrame(size, size, AV_PIX_FMT_RGB24);
         packet_ = detail::allocPacket();
         swsContext_ = detail::allocSwsContext(
             size, size, vidSize, vidSize, AV_PIX_FMT_RGB24, AV_PIX_FMT_YUV420P);
         detail::configureCodecContext(
-            codecContext_, codecId, outContext_->oformat, vidSize, vidSize);
+            codecContext_, codecId, outContext_->oformat, vidSize, vidSize, frameRate);
         detail::openVideo(codecContext_, stream_);
 
         av_dump_format(outContext_, 0, filename.data(), 1);

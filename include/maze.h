@@ -8,14 +8,6 @@
 #include <vector>
 
 namespace mazes {
-    /// Default length of the side of the maze. Mazes are always square
-    /// \relates Maze
-    constexpr unsigned DEFAULT_MAZE_SIZE = 21;
-
-    /// Default loop factor
-    /// \relates Maze
-    constexpr float DEFAULT_LOOP_FACTOR = 0;
-
     /// Generated maze to be solved. Consists of both a grid and a graph of intersection
     /// nodes. Enables writing to stdout and PNG image
     class Maze {
@@ -58,7 +50,7 @@ namespace mazes {
         /// results
         /// \param loopFactor Specifies the amount of loops created in the maze. 0 means there is
         /// only one solution to the maze. Increasing it increases the number of possible solutions
-        Maze(unsigned size = DEFAULT_MAZE_SIZE, float loopFactor = DEFAULT_LOOP_FACTOR);
+        Maze(unsigned size, double loopFactor);
 
         /// Get size of maze
         /// \returns the length of the side of the Maze
