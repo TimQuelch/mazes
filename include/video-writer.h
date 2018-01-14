@@ -64,8 +64,8 @@ namespace mazes {
         AVPacket* packet_;              ///< The stream packet
         struct SwsContext* swsContext_; ///< Conversion context
 
-        unsigned frameCounter_{0};
-        unsigned nUpdatesPerFrame_{2};
+        unsigned frameCounter_{0};     ///< The current frame
+        unsigned nUpdatesPerFrame_{2}; ///< The number of updates per frame
     };
 } // namespace mazes
 
