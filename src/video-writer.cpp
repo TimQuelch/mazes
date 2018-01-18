@@ -193,6 +193,7 @@ namespace mazes {
     } // namespace detail
 
     VideoWriter::VideoWriter(Maze const& maze, std::string_view filename) {
+        av_log_set_level(AV_LOG_QUIET);
         av_register_all();
 
         const int size = maze.size();
