@@ -39,6 +39,16 @@ namespace mazes {
                     std::string_view filename,
                     unsigned frameRate,
                     unsigned pixelsPerTile);
+
+        VideoWriter() = default;
+
+        /// Move constructor
+        /// \param other another VideoWriter
+        VideoWriter(VideoWriter&& other);
+        /// Move assignment operator
+        /// \param other another VideoWriter
+        /// \returns *this
+        VideoWriter& operator=(VideoWriter&& other);
         ~VideoWriter();
 
         /// Update a tile in the frame.

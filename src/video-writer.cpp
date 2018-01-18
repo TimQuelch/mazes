@@ -241,18 +241,52 @@ namespace mazes {
         }
     }
 
+    VideoWriter::VideoWriter(VideoWriter&& other)
+        : outContext_{other.outContext_}
+        , codecContext_{other.codecContext_}
+        , stream_{other.stream_}
+        , frame_{other.frame_}
+        , rgbFrame_{other.rgbFrame_}
+        , packet_{other.packet_}
+        , swsContext_{other.swsContext_}
+        , frameCounter_{other.frameCounter_}
+        , nUpdatesPerFrame_{other.nUpdatesPerFrame_} {
+        other.outContext_ = nullptr;
+        other.codecContext_ = nullptr;
+        other.stream_ = nullptr;
+        other.frame_ = nullptr;
+        other.rgbFrame_ = nullptr;
+        other.packet_ = nullptr;
+        other.swsContext_ = nullptr;
+    }
+
+    VideoWriter& VideoWriter::operator=(VideoWriter&& other) {
+        std::swap(*this, other);
+        return *this;
+    }
+
     VideoWriter::~VideoWriter() {
-        av_write_trailer(outContext_);
+        if (outContext_) {
+            av_write_trailer(outContext_);
 
-        if (!(outContext_->oformat->flags & AVFMT_NOFILE)) {
-            avio_closep(&outContext_->pb);
+            if (!(outContext_->oformat->flags & AVFMT_NOFILE)) {
+                avio_closep(&outContext_->pb);
+            }
+
+            avformat_free_context(outContext_);
         }
-
-        avformat_free_context(outContext_);
-        avcodec_free_context(&codecContext_);
-        av_frame_free(&frame_);
-        av_frame_free(&rgbFrame_);
-        av_packet_free(&packet_);
+        if (codecContext_) {
+            avcodec_free_context(&codecContext_);
+        }
+        if (frame_) {
+            av_frame_free(&frame_);
+        }
+        if (rgbFrame_) {
+            av_frame_free(&rgbFrame_);
+        }
+        if (packet_) {
+            av_packet_free(&packet_);
+        }
     }
 
     void VideoWriter::updateTile(int x, int y, Tile tile) {
