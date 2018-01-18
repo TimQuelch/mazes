@@ -22,6 +22,19 @@ namespace mazes {
         /// \returns true if help flag is passed
         bool help() const { return help_; }
 
+        /// Get whether the solve-bfs flag was passed
+        /// \returns true if solve-bfs flag is passed
+        bool solveBfs() const { return solveBfs_; }
+        /// Get whether the solve-dfs flag was passed
+        /// \returns true if solve-dfs flag is passed
+        bool solveDfs() const { return solveDfs_; }
+        /// Get whether the solve-dijkstra flag was passed
+        /// \returns true if solve-dijkstra flag is passed
+        bool solveDijkstra() const { return solveDijkstra_; }
+        /// Get whether the solve-astar flag was passed
+        /// \returns true if solve-astar flag is passed
+        bool solveAstar() const { return solveAstar_; }
+
         /// Get the maze size
         /// \returns The maze size
         unsigned mazeSize() const { return mazeSize_; }
@@ -41,6 +54,11 @@ namespace mazes {
         po::options_description description_{"Usage"};
 
         bool help_; ///< True if the help flag is passed
+
+        bool solveBfs_;      ///< True if the solve-bfs flag is passed
+        bool solveDfs_;      ///< True if the solve-dfs flag is passed
+        bool solveDijkstra_; ///< True if the solve-dijkstra flag is passed
+        bool solveAstar_;    ///< True if the solve-astar flag is passed
 
         unsigned mazeSize_; ///< The maze size
         double loopFactor_; ///< The loop factor
