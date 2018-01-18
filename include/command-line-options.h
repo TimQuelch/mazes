@@ -42,6 +42,9 @@ namespace mazes {
         /// \returns The loop factor
         double loopFactor() const { return loopFactor_; }
 
+        /// Get whether the write-video flag was passed
+        /// \returns true if write-video flag is passed
+        bool writeVideo() const { return writeVideo_; }
         /// Get the frame rate
         /// \returns The frame rate
         unsigned frameRate() const { return frameRate_; }
@@ -66,6 +69,7 @@ namespace mazes {
         static constexpr unsigned defaultMazeSize_{21};  ///< The default maze size
         static constexpr double defaultLoopFactor_{0.0}; ///< The default loop factor
 
+        bool writeVideo_;        ///< True if the write-video flag is passed
         unsigned frameRate_;     ///< The frame rate
         unsigned pixelsPerTile_; ///< The number of pixels per tile
 

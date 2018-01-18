@@ -27,6 +27,7 @@ namespace mazes {
             ("solve-dijkstra", "solve maze using Dijkstra's Algorithm")
             ("solve-astar", "solve maze using A*");
         videoOptions.add_options()
+            ("write-video", "write video solutions to files")
             ("frame-rate", po::value<unsigned>()->default_value(defaultFrameRate_),
              "The frame rate of produced videos")
             ("pixels-per-tile", po::value<unsigned>()->default_value(defaultPixelsPerTile_),
@@ -48,6 +49,7 @@ namespace mazes {
         mazeSize_ = vm["maze-size"].as<unsigned>();
         loopFactor_ = vm["loop-factor"].as<double>();
 
+        writeVideo_ = vm.count("write-video");
         frameRate_ = vm["frame-rate"].as<unsigned>();
         pixelsPerTile_ = vm["pixels-per-tile"].as<unsigned>();
 
