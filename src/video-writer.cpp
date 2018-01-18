@@ -33,18 +33,18 @@ namespace mazes {
                 , b{b} {}
         };
 
-        Pixel tileToPixel(Tile tile) {
+        Pixel tileToPixel(VideoWriter::Tile tile) {
             switch (tile) {
-            case Tile::wall:
+            case VideoWriter::Tile::wall:
                 return {0, 0, 0};
                 break;
-            case Tile::passage:
+            case VideoWriter::Tile::passage:
                 return {255, 255, 255};
                 break;
-            case Tile::visited:
+            case VideoWriter::Tile::visited:
                 return {255, 0, 255};
                 break;
-            case Tile::discovered:
+            case VideoWriter::Tile::discovered:
                 return {255, 255, 0};
                 break;
             }

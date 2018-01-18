@@ -23,13 +23,12 @@ namespace mazes {
     // Forward declaration for Maze
     class Maze;
 
-    /// Describes what type of maze tile.
-    /// \relates VideoWriter
-    enum class Tile { wall, passage, visited, discovered };
-
     /// Writes stages of the solution of the maze to a video file.
     class VideoWriter {
     public:
+        /// Describes what type of maze tile.
+        enum class Tile { wall, passage, visited, discovered };
+
         /// Construct with specified values.
         /// \param maze The maze to write to the video file
         /// \param filename The file to write the video to
