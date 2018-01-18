@@ -198,7 +198,7 @@ namespace mazes {
                              std::string_view filename,
                              unsigned frameRate,
                              unsigned pixelsPerTile) {
-        av_log_set_level(AV_LOG_QUIET);
+        av_log_set_level(AV_LOG_WARNING);
         av_register_all();
 
         const int size = maze.size();
