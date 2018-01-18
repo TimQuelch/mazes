@@ -5,7 +5,6 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#include <list>
 #include <png++/png.hpp>
 #include <random>
 #include <tuple>
@@ -124,7 +123,7 @@ namespace mazes {
         /// solution, increasing increases number of solutions
         /// \returns the grid of the maze. can be indexed with v[x][y]
         /// \callgraph
-        std::vector<std::vector<bool>> generateGrid(unsigned size, float loopFactor) {
+        std::vector<std::vector<bool>> generateGrid(unsigned size, double loopFactor) {
             // Initialise grid
             std::vector<std::vector<bool>> grid;
             grid.resize(size);
@@ -255,7 +254,7 @@ namespace mazes {
     } // namespace detail
 
     // Construct maze with given size. Generate grid and graph
-    Maze::Maze(unsigned size, float loopFactor)
+    Maze::Maze(unsigned size, double loopFactor)
         : size_{size}
         , grid_{detail::generateGrid(size, loopFactor)}
         , graph_{detail::generateGraph(grid_)} {}

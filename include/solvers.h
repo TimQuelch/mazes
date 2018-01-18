@@ -21,10 +21,14 @@ namespace mazes {
     /// \relates Maze
     /// This overload also writes the solution to a specified video file
     /// \param filename file to write to a video
+    /// \param frameRate the framerate of the produced video
+    /// \param pixelsPerTile the number of pixels per maze tile
     std::list<std::shared_ptr<Maze::Node>> solveBfs(Maze const& maze,
                                                     std::shared_ptr<Maze::Node> start,
                                                     std::shared_ptr<Maze::Node> end,
-                                                    std::string_view filename);
+                                                    std::string_view filename,
+                                                    unsigned frameRate,
+                                                    unsigned pixelsPerTile);
 
     /// Solve maze using depth first search.
     /// \copydetails solveBfs()
@@ -36,10 +40,14 @@ namespace mazes {
     /// \relates Maze
     /// This overload also writes the solution to a specified video file
     /// \param filename file to write to a video
+    /// \param frameRate the framerate of the produced video
+    /// \param pixelsPerTile the number of pixels per maze tile
     std::list<std::shared_ptr<Maze::Node>> solveDfs(Maze const& maze,
                                                     std::shared_ptr<Maze::Node> start,
                                                     std::shared_ptr<Maze::Node> end,
-                                                    std::string_view filename);
+                                                    std::string_view filename,
+                                                    unsigned frameRate,
+                                                    unsigned pixelsPerTile);
 
     /// Solve maze using Dijkstra's algorithm
     /// \copydetails solveBfs()
@@ -52,10 +60,14 @@ namespace mazes {
     /// \relates Maze
     /// This overload also writes the solution to a specified video file
     /// \param filename file to write to a video
+    /// \param frameRate the framerate of the produced video
+    /// \param pixelsPerTile the number of pixels per maze tile
     std::list<std::shared_ptr<Maze::Node>> solveDijkstra(Maze const& maze,
                                                          std::shared_ptr<Maze::Node> start,
                                                          std::shared_ptr<Maze::Node> end,
-                                                         std::string_view filename);
+                                                         std::string_view filename,
+                                                         unsigned frameRate,
+                                                         unsigned pixelsPerTile);
 
     /// Solve maze using A*
     /// \copydetails solveBfs()
@@ -68,10 +80,14 @@ namespace mazes {
     /// \relates Maze
     /// This overload also writes the solution to a specified video file
     /// \param filename file to write to a video
+    /// \param frameRate the framerate of the produced video
+    /// \param pixelsPerTile the number of pixels per maze tile
     std::list<std::shared_ptr<Maze::Node>> solveAstar(Maze const& maze,
                                                       std::shared_ptr<Maze::Node> start,
                                                       std::shared_ptr<Maze::Node> end,
-                                                      std::string_view filename);
+                                                      std::string_view filename,
+                                                      unsigned frameRate,
+                                                      unsigned pixelsPerTile);
 } // namespace mazes
 
 #endif

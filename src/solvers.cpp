@@ -59,15 +59,17 @@ namespace mazes {
 
     // Solve the maze using breadth first search
     std::list<NodePtr> solveBfs(Maze const& maze, NodePtr start, NodePtr end) {
-        return solveBfs(maze, start, end, "");
+        return solveBfs(maze, start, end, "", 0, 0);
     }
 
     std::list<std::shared_ptr<Maze::Node>> solveBfs(Maze const& maze,
                                                     std::shared_ptr<Maze::Node> start,
                                                     std::shared_ptr<Maze::Node> end,
-                                                    std::string_view filename) {
+                                                    std::string_view filename,
+                                                    unsigned frameRate,
+                                                    unsigned pixelsPerTile) {
         const std::list<NodePtr> graph = maze.getGraph();
-        VideoWriter video{maze, filename};
+        VideoWriter video{maze, filename, frameRate, pixelsPerTile};
         const bool writeVideo{!filename.empty()};
 
         std::queue<NodePtr> queue;
@@ -119,15 +121,19 @@ namespace mazes {
 
     // Solve the maze using depth first search
     std::list<NodePtr> solveDfs(Maze const& maze, NodePtr start, NodePtr end) {
-        return solveDfs(maze, start, end, "");
+        return solveDfs(maze, start, end, "", 0, 0);
     }
 
     // Solve the maze using depth first search
-    std::list<NodePtr>
-    solveDfs(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
+    std::list<NodePtr> solveDfs(Maze const& maze,
+                                NodePtr start,
+                                NodePtr end,
+                                std::string_view filename,
+                                unsigned frameRate,
+                                unsigned pixelsPerTile) {
         const std::list<NodePtr> graph = maze.getGraph();
 
-        VideoWriter video{maze, filename};
+        VideoWriter video{maze, filename, frameRate, pixelsPerTile};
         bool writeVideo{!filename.empty()};
 
         std::stack<NodePtr> stack;
@@ -179,15 +185,19 @@ namespace mazes {
 
     // Solve the maze using Djikstra's algorithm
     std::list<NodePtr> solveDijkstra(Maze const& maze, NodePtr start, NodePtr end) {
-        return solveDijkstra(maze, start, end, "");
+        return solveDijkstra(maze, start, end, "", 0, 0);
     }
 
     // Solve the maze using Djikstra's algorithm
-    std::list<NodePtr>
-    solveDijkstra(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
+    std::list<NodePtr> solveDijkstra(Maze const& maze,
+                                     NodePtr start,
+                                     NodePtr end,
+                                     std::string_view filename,
+                                     unsigned frameRate,
+                                     unsigned pixelsPerTile) {
         const std::list<NodePtr> graph = maze.getGraph();
 
-        VideoWriter video{maze, filename};
+        VideoWriter video{maze, filename, frameRate, pixelsPerTile};
         bool writeVideo{!filename.empty()};
 
         std::unordered_map<NodePtr, int> costs;
@@ -249,15 +259,19 @@ namespace mazes {
 
     // Solve the maze using A*
     std::list<NodePtr> solveAstar(Maze const& maze, NodePtr start, NodePtr end) {
-        return solveAstar(maze, start, end, "");
+        return solveAstar(maze, start, end, "", 0, 0);
     }
 
     // Solve the maze using A*
-    std::list<NodePtr>
-    solveAstar(Maze const& maze, NodePtr start, NodePtr end, std::string_view filename) {
+    std::list<NodePtr> solveAstar(Maze const& maze,
+                                  NodePtr start,
+                                  NodePtr end,
+                                  std::string_view filename,
+                                  unsigned frameRate,
+                                  unsigned pixelsPerTile) {
         const std::list<NodePtr> graph = maze.getGraph();
 
-        VideoWriter video{maze, filename};
+        VideoWriter video{maze, filename, frameRate, pixelsPerTile};
         bool writeVideo{!filename.empty()};
 
         std::unordered_map<NodePtr, int> costs;
@@ -268,7 +282,8 @@ namespace mazes {
             static const int ex = end->x;
             static const int ey = end->y;
             // return 0.5 * (ex - node->x + ey - node->y);
-            return 1.3 * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) + (ey - node->y) * (ey - node->y)));
+            return 1.3 * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) +
+                                             (ey - node->y) * (ey - node->y)));
         };
 
         using queueNode = std::pair<NodePtr, int>;
