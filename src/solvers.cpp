@@ -232,20 +232,22 @@ namespace mazes {
     }
 
     // Solve the maze using A*
-    std::list<NodePtr>
-    solveAstar(Maze const& maze, NodePtr start, NodePtr end, std::optional<VideoWriter>& video) {
+    std::list<NodePtr> solveAstar(Maze const& maze,
+                                  NodePtr start,
+                                  NodePtr end,
+                                  std::optional<VideoWriter>& video,
+                                  double heuristicWeighting) {
         const std::list<NodePtr> graph = maze.getGraph();
 
         std::unordered_map<NodePtr, int> costs;
         std::unordered_map<NodePtr, NodePtr> paths;
         paths[start] = NodePtr{nullptr};
 
-        auto distance = [&end](NodePtr const& node) -> int {
+        auto distance = [&end, heuristicWeighting](NodePtr const& node) -> int {
             static const int ex = end->x;
             static const int ey = end->y;
-            // return 0.5 * (ex - node->x + ey - node->y);
-            return 1.3 * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) +
-                                             (ey - node->y) * (ey - node->y)));
+            return heuristicWeighting * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) +
+                                                            (ey - node->y) * (ey - node->y)));
         };
 
         using queueNode = std::pair<NodePtr, int>;

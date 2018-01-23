@@ -67,7 +67,8 @@ int main(int argc, char* argv[]) {
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze, "vidAst.webm", opts.frameRate(), opts.pixelsPerTile()};
         }
-        auto ast = solveAstar(maze, maze.getStartNode(), maze.getEndNode(), video);
+        auto ast = solveAstar(
+            maze, maze.getStartNode(), maze.getEndNode(), video, opts.astarHeuristicWeighting());
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
         std::cout << "Time elapsed = " << d.count() << " ms\n";
     }

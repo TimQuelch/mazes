@@ -35,6 +35,10 @@ namespace mazes {
         /// \returns true if solve-astar flag is passed
         bool solveAstar() const { return solveAstar_; }
 
+        /// Gets the weighting for the A* heuristic
+        /// \returns the weighting of the A* heuristic
+        double astarHeuristicWeighting() const { return astarHeuristicWeighting_; }
+
         /// Get the maze size
         /// \returns The maze size
         unsigned mazeSize() const { return mazeSize_; }
@@ -62,6 +66,11 @@ namespace mazes {
         bool solveDfs_;      ///< True if the solve-dfs flag is passed
         bool solveDijkstra_; ///< True if the solve-dijkstra flag is passed
         bool solveAstar_;    ///< True if the solve-astar flag is passed
+
+        double astarHeuristicWeighting_; ///< Weighting for A* heuristic
+
+        /// The default weighting heuristic
+        static constexpr double defaultAstarHeuristicWeighting_{1.0};
 
         unsigned mazeSize_; ///< The maze size
         double loopFactor_; ///< The loop factor

@@ -40,12 +40,14 @@ namespace mazes {
                                                          std::optional<VideoWriter>& video);
 
     /// Solve maze using A*
+    /// \param heuristicWeighting the weighting to give to the heuristic
     /// \copydetails solveBfs()
     /// \relates Maze
     std::list<std::shared_ptr<Maze::Node>> solveAstar(Maze const& maze,
                                                       std::shared_ptr<Maze::Node> start,
                                                       std::shared_ptr<Maze::Node> end,
-                                                      std::optional<VideoWriter>& video);
+                                                      std::optional<VideoWriter>& video,
+                                                      double heuristicWeighting);
 } // namespace mazes
 
 #endif

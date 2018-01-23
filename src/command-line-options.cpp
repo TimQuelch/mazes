@@ -25,7 +25,11 @@ namespace mazes {
             ("solve-bfs", "solve maze using Breadth First Search")
             ("solve-dfs", "solve maze using Depth First Search")
             ("solve-dijkstra", "solve maze using Dijkstra's Algorithm")
-            ("solve-astar", "solve maze using A*");
+            ("solve-astar", "solve maze using A*")
+            ("astar-heuristic-weighting",
+             po::value<double>()->default_value(defaultAstarHeuristicWeighting_),
+             "weighting to use for heuristic in A* solver. Values greater than 1 will find"
+             "a solution more quickly, but not necessarily the shortest path");
         videoOptions.add_options()
             ("write-video", "write video solutions to files")
             ("frame-rate", po::value<unsigned>()->default_value(defaultFrameRate_),
@@ -45,6 +49,8 @@ namespace mazes {
         solveDfs_ = vm.count("solve-dfs") || vm.count("solve-all");
         solveDijkstra_ = vm.count("solve-dijkstra") || vm.count("solve-all");
         solveAstar_ = vm.count("solve-astar") || vm.count("solve-all");
+
+        astarHeuristicWeighting_ = vm["astar-heuristic-weighting"].as<double>();
 
         mazeSize_ = vm["maze-size"].as<unsigned>();
         loopFactor_ = vm["loop-factor"].as<double>();
