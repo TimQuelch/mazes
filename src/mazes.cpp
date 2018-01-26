@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze, "vidBfs.webm", opts.frameRate(), opts.pixelsPerTile()};
         }
-        auto bfs = solveBfs(maze, maze.getStartNode(), maze.getEndNode(), video);
+        auto bfs = solveBfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
         std::cout << "Time elapsed = " << d.count() << " ms\n";
     }
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze, "vidDfs.webm", opts.frameRate(), opts.pixelsPerTile()};
         }
-        auto dfs = solveDfs(maze, maze.getStartNode(), maze.getEndNode(), video);
+        auto dfs = solveDfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
         std::cout << "Time elapsed = " << d.count() << " ms\n";
     }
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze, "vidDij.webm", opts.frameRate(), opts.pixelsPerTile()};
         }
-        auto dij = solveDijkstra(maze, maze.getStartNode(), maze.getEndNode(), video);
+        auto dij = solveDijkstra(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
         std::cout << "Time elapsed = " << d.count() << " ms\n";
     }
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
             video = mazes::VideoWriter{maze, "vidAst.webm", opts.frameRate(), opts.pixelsPerTile()};
         }
         auto ast = solveAstar(
-            maze, maze.getStartNode(), maze.getEndNode(), video, opts.astarHeuristicWeighting());
+            maze, *maze.getStartNode(), *maze.getEndNode(), video, opts.astarHeuristicWeighting());
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
         std::cout << "Time elapsed = " << d.count() << " ms\n";
     }
