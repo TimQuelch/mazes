@@ -1,6 +1,7 @@
 /// \author Tim Quelch
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <exception>
 #include <iostream>
@@ -13,6 +14,9 @@
 #include "maze.h"
 #include "solvers.h"
 #include "video-writer.h"
+
+using namespace std::chrono_literals;
+constexpr auto freezeDuration = 1000ms;
 
 namespace mazes {
     namespace detail {
@@ -30,6 +34,18 @@ namespace mazes {
             }
             path.reverse();
             return path;
+        }
+
+        void writePath(VideoWriter& video, std::list<std::shared_ptr<Maze::Node>> const& path) {
+            auto prev = path.cbegin();
+            auto next = prev++;
+            while (prev != path.cend()) {
+                video.updateLine(
+                    (*prev)->x, (*prev)->y, (*next)->x, (*next)->y, VideoWriter::Tile::path);
+                video.writeUpdate();
+                prev++;
+                next++;
+            }
         }
 
         template <typename Container>
@@ -72,7 +88,12 @@ namespace mazes {
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (current == &end) {
-                    return detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
+                    if (video) {
+                        detail::writePath(*video, path);
+                        video->writeFreezeFrame(freezeDuration);
+                    }
+                    return path;
                 }
 
                 // Process each of the connections
@@ -128,7 +149,12 @@ namespace mazes {
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (&(*current) == &end) {
-                    return detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
+                    if (video) {
+                        detail::writePath(*video, path);
+                        video->writeFreezeFrame(freezeDuration);
+                    }
+                    return path;
                 }
 
                 // Process each of the connections
@@ -178,7 +204,7 @@ namespace mazes {
         queue.push(std::make_pair(&start, costs[&start]));
 
         while (!queue.empty()) {
-            auto[current, poppedCost] = queue.top();
+            auto [current, poppedCost] = queue.top();
             queue.pop();
 
             if (video) {
@@ -191,7 +217,12 @@ namespace mazes {
 
             if (poppedCost == costs[current]) {
                 if (current == &end) {
-                    return detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
+                    if (video) {
+                        detail::writePath(*video, path);
+                        video->writeFreezeFrame(freezeDuration);
+                    }
+                    return path;
                 }
 
                 int currentCost = costs[current];
@@ -213,7 +244,7 @@ namespace mazes {
                 }
             }
             if (video) {
-                video->writeFrame();
+                video->writeUpdate();
             }
         }
         throw std::runtime_error{"Path not found"};
@@ -266,7 +297,12 @@ namespace mazes {
 
             if (poppedCost == costs[current] + distance(current)) {
                 if (current == &end) {
-                    return detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
+                    if (video) {
+                        detail::writePath(*video, path);
+                        video->writeFreezeFrame(freezeDuration);
+                    }
+                    return path;
                 }
 
                 int currentCost = costs[current];

@@ -42,10 +42,10 @@ namespace mazes {
                 return {255, 255, 255};
                 break;
             case VideoWriter::Tile::visited:
-                return {255, 0, 255};
+                return {255, 0, 0};
                 break;
             case VideoWriter::Tile::discovered:
-                return {255, 255, 0};
+                return {0, 255, 0};
                 break;
             case VideoWriter::Tile::path:
                 return {0, 0, 255};
