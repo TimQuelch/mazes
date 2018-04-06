@@ -9,6 +9,7 @@ namespace mazes {
         auto generalOptions = po::options_description{"General"};
         auto mazeOptions = po::options_description{"Maze options"};
         auto videoOptions = po::options_description{"Video options"};
+        auto imageOptions = po::options_description{"Image options"};
         auto solverOptions = po::options_description{"Solver options"};
 
         // clang-format off
@@ -36,9 +37,15 @@ namespace mazes {
              "The frame rate of produced videos")
             ("pixels-per-tile", po::value<unsigned>()->default_value(defaultPixelsPerTile_),
              "The number of pixels per tile. This should be an even number");
+        imageOptions.add_options()
+            ("save-maze", "save maze to image file");
         // clang-format on
 
-        description_.add(generalOptions).add(mazeOptions).add(solverOptions).add(videoOptions);
+        description_.add(generalOptions)
+            .add(mazeOptions)
+            .add(solverOptions)
+            .add(videoOptions)
+            .add(imageOptions);
 
         auto vm = po::variables_map{};
         po::store(po::parse_command_line(argc, argv, description_), vm);
@@ -58,6 +65,8 @@ namespace mazes {
         writeVideo_ = vm.count("write-video");
         frameRate_ = vm["frame-rate"].as<unsigned>();
         pixelsPerTile_ = vm["pixels-per-tile"].as<unsigned>();
+
+        saveMazeImage_ = vm.count("save-maze");
 
         if (pixelsPerTile_ % 2) {
             std::ostringstream os;

@@ -24,6 +24,10 @@ int main(int argc, char* argv[]) {
     auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
+    if (opts.saveMazeImage()) {
+        maze.writePng("maze.png");
+    }
+
     if (opts.solveBfs()) {
         std::cout << "Solving using BFS... " << std::flush;
         start = hr_clock::now();

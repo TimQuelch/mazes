@@ -56,6 +56,10 @@ namespace mazes {
         /// \returns The number of pixels per tile
         unsigned pixelsPerTile() const { return pixelsPerTile_; }
 
+        /// Get whether the save-maze flag was passed
+        /// \returns true if save-maze flag is passed
+        bool saveMazeImage() const { return saveMazeImage_; }
+
     private:
         /// The options description
         po::options_description description_{"Usage"};
@@ -84,6 +88,8 @@ namespace mazes {
 
         static constexpr unsigned defaultFrameRate_{60};    ///< The default frame rate
         static constexpr unsigned defaultPixelsPerTile_{2}; ///< The default pixels per tile
+
+        bool saveMazeImage_; ///< True if the maze should be saved as an image
     };
 } // namespace mazes
 
