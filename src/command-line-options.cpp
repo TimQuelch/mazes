@@ -41,7 +41,9 @@ namespace mazes {
             ("frame-rate", po::value<unsigned>()->default_value(defaultFrameRate_),
              "The frame rate of produced videos")
             ("pixels-per-tile", po::value<unsigned>()->default_value(defaultPixelsPerTile_),
-             "The number of pixels per tile. This should be an even number");
+             "The number of pixels per tile. This should be an even number")
+            ("updates-per-frame", po::value<unsigned>()->default_value(defaultNUpdatesPerFrame_),
+             "The number of updates per frame");
         imageOptions.add_options()
             ("save-maze", "save maze to image file");
         // clang-format on
@@ -70,6 +72,7 @@ namespace mazes {
         writeVideo_ = vm.count("write-video");
         frameRate_ = vm["frame-rate"].as<unsigned>();
         pixelsPerTile_ = vm["pixels-per-tile"].as<unsigned>();
+        nUpdatesPerFrame_ = vm["updates-per-frame"].as<unsigned>();
 
         saveMazeImage_ = vm.count("save-maze");
 

@@ -200,8 +200,10 @@ namespace mazes {
     VideoWriter::VideoWriter(Maze const& maze,
                              std::string_view filename,
                              unsigned frameRate,
-                             unsigned pixelsPerTile)
-        : frameRate_{frameRate} {
+                             unsigned pixelsPerTile,
+                             unsigned nUpdatesPerFrame)
+        : frameRate_{frameRate}
+        , nUpdatesPerFrame_{nUpdatesPerFrame} {
         av_log_set_level(AV_LOG_WARNING);
         av_register_all();
 

@@ -60,6 +60,9 @@ namespace mazes {
         /// Get the number of pixels per tile
         /// \returns The number of pixels per tile
         unsigned pixelsPerTile() const { return pixelsPerTile_; }
+        /// Get the number of updates per frame
+        /// \returns The number updates per frame
+        unsigned nUpdatesPerFrame() const { return nUpdatesPerFrame_; }
 
         /// Get whether the save-maze flag was passed
         /// \returns true if save-maze flag is passed
@@ -89,12 +92,14 @@ namespace mazes {
         static constexpr double defaultLoopFactor_{0.0}; ///< The default loop factor
         static const std::string defaultMazeMethod_;     ///< The default loop factor
 
-        bool writeVideo_;        ///< True if the write-video flag is passed
-        unsigned frameRate_;     ///< The frame rate
-        unsigned pixelsPerTile_; ///< The number of pixels per tile
+        bool writeVideo_;           ///< True if the write-video flag is passed
+        unsigned frameRate_;        ///< The frame rate
+        unsigned pixelsPerTile_;    ///< The number of pixels per tile
+        unsigned nUpdatesPerFrame_; ///< The number of updates per frame
 
-        static constexpr unsigned defaultFrameRate_{60};    ///< The default frame rate
-        static constexpr unsigned defaultPixelsPerTile_{2}; ///< The default pixels per tile
+        static constexpr unsigned defaultFrameRate_{60};       ///< The default frame rate
+        static constexpr unsigned defaultPixelsPerTile_{2};    ///< The default pixels per tile
+        static constexpr unsigned defaultNUpdatesPerFrame_{2}; ///< The default updates per frame
 
         bool saveMazeImage_; ///< True if the maze should be saved as an image
     };

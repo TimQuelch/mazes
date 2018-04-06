@@ -16,7 +16,7 @@
 #include "video-writer.h"
 
 using namespace std::chrono_literals;
-constexpr auto freezeDuration = 1000ms;
+constexpr auto freezeDuration = 2000ms;
 
 namespace mazes {
     namespace detail {

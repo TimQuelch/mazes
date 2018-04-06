@@ -35,10 +35,12 @@ namespace mazes {
         /// \param filename The file to write the video to
         /// \param frameRate The framerate of the produced video
         /// \param pixelsPerTile The number of pixels per maze tile
+        /// \param nUpdatesPerFrame The number of updates per video frame
         VideoWriter(Maze const& maze,
                     std::string_view filename,
                     unsigned frameRate,
-                    unsigned pixelsPerTile);
+                    unsigned pixelsPerTile,
+                    unsigned nUpdatesPerFrame);
 
         VideoWriter() = default;
 

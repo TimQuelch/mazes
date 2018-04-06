@@ -33,7 +33,11 @@ int main(int argc, char* argv[]) {
         start = hr_clock::now();
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze, "vidBfs.webm", opts.frameRate(), opts.pixelsPerTile()};
+            video = mazes::VideoWriter{maze,
+                                       "vidBfs.webm",
+                                       opts.frameRate(),
+                                       opts.pixelsPerTile(),
+                                       opts.nUpdatesPerFrame()};
         }
         auto bfs = solveBfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -45,7 +49,11 @@ int main(int argc, char* argv[]) {
         start = hr_clock::now();
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze, "vidDfs.webm", opts.frameRate(), opts.pixelsPerTile()};
+            video = mazes::VideoWriter{maze,
+                                       "vidDfs.webm",
+                                       opts.frameRate(),
+                                       opts.pixelsPerTile(),
+                                       opts.nUpdatesPerFrame()};
         }
         auto dfs = solveDfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -57,7 +65,11 @@ int main(int argc, char* argv[]) {
         start = hr_clock::now();
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze, "vidDij.webm", opts.frameRate(), opts.pixelsPerTile()};
+            video = mazes::VideoWriter{maze,
+                                       "vidDij.webm",
+                                       opts.frameRate(),
+                                       opts.pixelsPerTile(),
+                                       opts.nUpdatesPerFrame()};
         }
         auto dij = solveDijkstra(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -69,7 +81,11 @@ int main(int argc, char* argv[]) {
         start = hr_clock::now();
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze, "vidAst.webm", opts.frameRate(), opts.pixelsPerTile()};
+            video = mazes::VideoWriter{maze,
+                                       "vidAst.webm",
+                                       opts.frameRate(),
+                                       opts.pixelsPerTile(),
+                                       opts.nUpdatesPerFrame()};
         }
         auto ast = solveAstar(
             maze, *maze.getStartNode(), *maze.getEndNode(), video, opts.astarHeuristicWeighting());
