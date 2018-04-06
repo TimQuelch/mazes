@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
+#include <deque>
 #include <iomanip>
 #include <iostream>
 #include <png++/png.hpp>
@@ -116,20 +117,19 @@ namespace mazes {
             return std::abs(one.x - two.x) + std::abs(one.y - two.y);
         }
 
-        /// Generate the grid of a maze. There is an entrance in the top left, and an exit in the
-        /// bottom right.
-        /// \param size the length of the side of the maze
-        /// \param loopFactor the factor of loopiness in the maze. 0 means there is a single
-        /// solution, increasing increases number of solutions
-        /// \returns the grid of the maze. can be indexed with v[x][y]
-        /// \callgraph
-        std::vector<std::vector<bool>> generateGrid(unsigned size, double loopFactor) {
-            // Initialise grid
-            std::vector<std::vector<bool>> grid;
+        /// Initialise a grid to false
+        std::vector<std::vector<bool>> initGrid(unsigned size) {
+            auto grid = std::vector<std::vector<bool>>();
             grid.resize(size);
             for (unsigned i = 0; i < size; i++) {
                 grid[i].resize(size, false);
             }
+            return grid;
+        }
+
+        /// Generate maze with Prims method
+        void generatePrims(std::vector<std::vector<bool>>& grid) {
+            const auto size = grid.size();
 
             // Randomly generate initial point
             Point init(randInt(0, (size - 2) / 2) * 2 + 1, randInt(0, (size - 2) / 2) * 2 + 1);
@@ -157,9 +157,75 @@ namespace mazes {
                 frontierPoints.merge(newFrontierPoints);
                 frontierPoints.unique();
             }
+        }
 
-            // Remove walls to create multiple paths in the maze. Pick random points until a valid
-            // wall is found, then set it to be a pathway
+        std::list<std::pair<Point, Point>> divideChamber(std::vector<std::vector<bool>>& grid,
+                                                         std::pair<Point, Point> chamber) {
+            const auto x1 = chamber.first.x;
+            const auto y1 = chamber.first.y;
+            const auto x2 = chamber.second.x;
+            const auto y2 = chamber.second.y;
+            const auto size = x2 - x1;
+            const auto mid = (size + 1) / 2;
+
+            if (size < 2) {
+                return {};
+            }
+
+            // Set chamber to pathways
+            for (auto i = x1; i <= x2; i++) {
+                for (auto j = y1; j <= y2; j++) {
+                    grid[i][j] = true;
+                }
+            }
+
+            // Set inner walls to walls
+            for (auto i = x1; i <= x2; i++) {
+                grid[i][y1 + mid] = false;
+            }
+            for (auto j = y1; j <= y2; j++) {
+                grid[x1 + mid][j] = false;
+            }
+
+            // Create openings in walls
+            const auto rand = [mid]() { return randInt(0, mid / 2) * 2; };
+            auto openings = std::vector<Point>{{x1 + mid, y1 + rand()},
+                                               {x1 + mid, y1 + mid + 1 + rand()},
+                                               {x1 + rand(), y1 + mid},
+                                               {x1 + mid + 1 + rand(), y1 + mid}};
+            openings.erase(openings.cbegin() + randInt(0, 3));
+
+            for (auto p : openings) {
+                grid[p.x][p.y] = true;
+            }
+
+            // Return the subdivided chambers
+            return {{{x1, y1}, {x1 + mid - 1, y1 + mid - 1}},
+                    {{x1 + mid + 1, y1 + mid + 1}, {x2, y2}},
+                    {{x1 + mid + 1, y1}, {x2, y1 + mid - 1}},
+                    {{x1, y1 + mid + 1}, {x1 + mid - 1, y2}}};
+        }
+
+        /// Generate maze with recursive division method
+        void generateDivision(std::vector<std::vector<bool>>& grid) {
+            const auto size = static_cast<int>(grid.size());
+
+            std::deque<std::pair<Point, Point>> chambers;
+            chambers.push_back({{1, 1}, {size - 2, size - 2}});
+
+            while (!chambers.empty()) {
+                auto newChambers = divideChamber(grid, chambers.front());
+                chambers.pop_front();
+                for (auto const& c : newChambers) {
+                    chambers.push_back(c);
+                }
+            }
+        }
+
+        /// Remove walls to create multiple paths in the maze. Pick random points until a valid
+        /// wall is found, then set it to be a pathway
+        void addLoops(std::vector<std::vector<bool>>& grid, double loopFactor) {
+            const auto size = grid.size();
             const unsigned loops = size * size * loopFactor * loopFactor;
             for (unsigned i = 0; i < loops; i++) {
                 Point p;
@@ -168,10 +234,37 @@ namespace mazes {
                 } while (!isWall(grid, p));
                 grid[p.x][p.y] = true;
             }
+        }
 
-            // Add the entrance and exit of the maze
+        /// Add the entrance and exit of the maze
+        void addEntranceAndExit(std::vector<std::vector<bool>>& grid) {
+            const auto size = grid.size();
             grid[1][0] = true;
             grid[size - 2][size - 1] = true;
+        }
+
+        /// Generate the grid of a maze. There is an entrance in the top left, and an exit in the
+        /// bottom right.
+        /// \param size the length of the side of the maze
+        /// \param loopFactor the factor of loopiness in the maze. 0 means there is a single
+        /// solution, increasing increases number of solutions
+        /// \returns the grid of the maze. can be indexed with v[x][y]
+        /// \callgraph
+        std::vector<std::vector<bool>>
+        generateGrid(unsigned size, double loopFactor, Maze::Method method) {
+            auto grid = initGrid(size);
+
+            switch (method) {
+            case Maze::Method::prims:
+                generatePrims(grid);
+                break;
+            case Maze::Method::division:
+                generateDivision(grid);
+                break;
+            }
+
+            addLoops(grid, loopFactor);
+            addEntranceAndExit(grid);
 
             return grid;
         }
@@ -254,9 +347,9 @@ namespace mazes {
     } // namespace detail
 
     // Construct maze with given size. Generate grid and graph
-    Maze::Maze(unsigned size, double loopFactor)
+    Maze::Maze(unsigned size, double loopFactor, Maze::Method method)
         : size_{size}
-        , grid_{detail::generateGrid(size, loopFactor)}
+        , grid_{detail::generateGrid(size, loopFactor, method)}
         , graph_{detail::generateGraph(grid_)} {}
 
     // Print the maze to stdout

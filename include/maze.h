@@ -14,6 +14,12 @@ namespace mazes {
     public:
         struct Edge;
 
+        /// The method to generate the maze
+        enum class Method {
+            prims,
+            division
+        };
+
         /// A Node in graph of the maze
         struct Node {
         public:
@@ -50,7 +56,8 @@ namespace mazes {
         /// results
         /// \param loopFactor Specifies the amount of loops created in the maze. 0 means there is
         /// only one solution to the maze. Increasing it increases the number of possible solutions
-        Maze(unsigned size, double loopFactor);
+        /// \param method The method used to generate the maze
+        Maze(unsigned size, double loopFactor, Method method);
 
         /// Get size of maze
         /// \returns the length of the side of the Maze
