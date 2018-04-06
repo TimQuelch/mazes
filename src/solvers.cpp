@@ -92,7 +92,7 @@ namespace mazes {
                 }
             }
             if (video) {
-                video->writeFrame();
+                video->writeUpdate();
             }
         }
         throw std::runtime_error{"Path not found"};
@@ -148,7 +148,7 @@ namespace mazes {
                 }
             }
             if (video) {
-                video->writeFrame();
+                video->writeUpdate();
             }
         }
         throw std::runtime_error{"Path not found"};
@@ -288,7 +288,7 @@ namespace mazes {
                 }
             }
             if (video) {
-                video->writeFrame();
+                video->writeUpdate();
             }
         }
         throw std::runtime_error{"Path not found"};

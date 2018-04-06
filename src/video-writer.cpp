@@ -47,6 +47,9 @@ namespace mazes {
             case VideoWriter::Tile::discovered:
                 return {255, 255, 0};
                 break;
+            case VideoWriter::Tile::path:
+                return {0, 0, 255};
+                break;
             }
             return {0, 0, 0};
         }
@@ -197,7 +200,8 @@ namespace mazes {
     VideoWriter::VideoWriter(Maze const& maze,
                              std::string_view filename,
                              unsigned frameRate,
-                             unsigned pixelsPerTile) {
+                             unsigned pixelsPerTile)
+        : frameRate_{frameRate} {
         av_log_set_level(AV_LOG_WARNING);
         av_register_all();
 
@@ -249,6 +253,7 @@ namespace mazes {
         , rgbFrame_{other.rgbFrame_}
         , packet_{other.packet_}
         , swsContext_{other.swsContext_}
+        , frameRate_{other.frameRate_}
         , frameCounter_{other.frameCounter_}
         , nUpdatesPerFrame_{other.nUpdatesPerFrame_} {
         other.outContext_ = nullptr;
@@ -316,10 +321,14 @@ namespace mazes {
         }
     }
 
-    void VideoWriter::writeFrame() {
+    void VideoWriter::writeUpdate() {
         if (frameCounter_++ % nUpdatesPerFrame_ == 0) {
-            detail::writeVideoFrame(
-                outContext_, codecContext_, stream_, packet_, swsContext_, rgbFrame_, frame_);
+            writeFrame();
         }
+    }
+
+    void VideoWriter::writeFrame() {
+        detail::writeVideoFrame(
+            outContext_, codecContext_, stream_, packet_, swsContext_, rgbFrame_, frame_);
     }
 } // namespace mazes

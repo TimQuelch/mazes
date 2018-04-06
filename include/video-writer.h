@@ -3,6 +3,7 @@
 #ifndef MAZES_VIDEO_WRITER_H
 #define MAZES_VIDEO_WRITER_H
 
+#include <chrono>
 #include <string_view>
 
 namespace boost::program_options {
@@ -27,7 +28,7 @@ namespace mazes {
     class VideoWriter {
     public:
         /// Describes what type of maze tile.
-        enum class Tile { wall, passage, visited, discovered };
+        enum class Tile { wall, passage, visited, discovered, path };
 
         /// Construct with specified values.
         /// \param maze The maze to write to the video file
@@ -64,8 +65,23 @@ namespace mazes {
         /// \param tile The type of tile to update to
         void updateLine(int x1, int y1, int x2, int y2, Tile tile);
 
+        /// If the specified number of updates have passed, write the frame to file
+        void writeUpdate();
+
         /// Write the current frame to the file
         void writeFrame();
+
+        /// Write the current frame for a specifed timeframe
+        /// \tparam Duration a std::chrono duration type
+        /// \param duration the duration of time to freeze the frame for
+        template <typename Duration>
+        void writeFreezeFrame(Duration duration) {
+            const auto frames =
+                std::chrono::duration_cast<std::chrono::seconds>(duration * frameRate_).count();
+            for (auto i = 0; i < frames; i++) {
+                writeFrame();
+            }
+        }
 
     private:
         AVFormatContext* outContext_;   ///< The format context
@@ -76,6 +92,7 @@ namespace mazes {
         AVPacket* packet_;              ///< The stream packet
         struct SwsContext* swsContext_; ///< Conversion context
 
+        unsigned frameRate_{60};       ///< The frame rate of the video
         unsigned frameCounter_{0};     ///< The current frame
         unsigned nUpdatesPerFrame_{2}; ///< The number of updates per frame
     };
