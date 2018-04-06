@@ -6,6 +6,8 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+#include "maze.h"
+
 namespace mazes {
     /// Parse and store command line options for the maze generation and solutions
     class CommandLineOptions {
@@ -45,6 +47,9 @@ namespace mazes {
         /// Get the loop factor
         /// \returns The loop factor
         double loopFactor() const { return loopFactor_; }
+        /// Get the method to use to generate the maze
+        /// \returns The maze generation method
+        Maze::Method mazeMethod() const { return mazeMethod_; }
 
         /// Get whether the write-video flag was passed
         /// \returns true if write-video flag is passed
@@ -76,11 +81,13 @@ namespace mazes {
         /// The default weighting heuristic
         static constexpr double defaultAstarHeuristicWeighting_{1.0};
 
-        unsigned mazeSize_; ///< The maze size
-        double loopFactor_; ///< The loop factor
+        unsigned mazeSize_;       ///< The maze size
+        double loopFactor_;       ///< The loop factor
+        Maze::Method mazeMethod_; ///< The maze generation method
 
         static constexpr unsigned defaultMazeSize_{21};  ///< The default maze size
         static constexpr double defaultLoopFactor_{0.0}; ///< The default loop factor
+        static const std::string defaultMazeMethod_;     ///< The default loop factor
 
         bool writeVideo_;        ///< True if the write-video flag is passed
         unsigned frameRate_;     ///< The frame rate

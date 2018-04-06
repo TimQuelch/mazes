@@ -3,8 +3,11 @@
 #include <iostream>
 
 #include "command-line-options.h"
+#include "maze.h"
 
 namespace mazes {
+    const std::string CommandLineOptions::defaultMazeMethod_ = "prims";
+
     CommandLineOptions::CommandLineOptions(int argc, char* argv[]) {
         auto generalOptions = po::options_description{"General"};
         auto mazeOptions = po::options_description{"Maze options"};
@@ -20,7 +23,9 @@ namespace mazes {
              "The length of the side of the maze")
             ("loop-factor", po::value<double>()->default_value(defaultLoopFactor_),
              "The degree of loopiness in the maze. 0 means there will be a single solution to"
-             "the maze, number of solutions increases as value increases");
+             "the maze, number of solutions increases as value increases")
+            ("maze-method", po::value<std::string>()->default_value(defaultMazeMethod_),
+             "Method to generate the maze with, either 'prims' or 'division'");
         solverOptions.add_options()
             ("solve-all", "solve maze using all algorithms (other solve flags are ignored)")
             ("solve-bfs", "solve maze using Breadth First Search")
@@ -67,6 +72,17 @@ namespace mazes {
         pixelsPerTile_ = vm["pixels-per-tile"].as<unsigned>();
 
         saveMazeImage_ = vm.count("save-maze");
+
+        if (vm["maze-method"].as<std::string>() == "prims") {
+            mazeMethod_ = Maze::Method::prims;
+        } else if (vm["maze-method"].as<std::string>() == "division") {
+            mazeMethod_ = Maze::Method::division;
+        } else {
+            std::ostringstream os;
+            os << "Invalid maze generation method: " << vm["maze-method"].as<std::string>()
+               << ". Must be either 'prims' or 'division'";
+            throw std::runtime_error{os.str()};
+        }
 
         if (pixelsPerTile_ % 2) {
             std::ostringstream os;

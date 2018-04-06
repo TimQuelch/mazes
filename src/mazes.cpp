@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Generating maze... " << std::flush;
     auto start = hr_clock::now();
-    mazes::Maze maze(opts.mazeSize(), opts.loopFactor(), mazes::Maze::Method::division);
+    mazes::Maze maze(opts.mazeSize(), opts.loopFactor(), opts.mazeMethod());
     auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
