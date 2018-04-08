@@ -26,9 +26,19 @@ target_link_libraries(
     FFmpeg::swscale
     png++::png++)
 
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    set(DOXYGEN_QUIET YES)
+    set(DOXYGEN_WARNINGS YES)
+    set(DOXYGEN_WARN_NO_PARAMDOC YES)
+    set(DOXYGEN_EXTRACT_PRIVATE YES)
+    set(DOXYGEN_EXTRACT_STATIC YES)
+    set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
+    set(DOXYGEN_GENERATE_TREEVIEW YES)
+    doxygen_add_docs(docs)
+endif()
+
 include(GNUInstallDirs)
 install(
     TARGETS mazes
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-add_subdirectory(docs)
