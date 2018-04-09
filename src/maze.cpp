@@ -39,9 +39,9 @@ namespace mazes {
 
         /// Generates a random integer between a and b
         int randInt(int a, int b) {
-            static long seed = std::chrono::system_clock::now().time_since_epoch().count();
-            static std::default_random_engine randEngine{seed};
-            std::uniform_int_distribution dist{a, b};
+            static auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+            static auto randEngine = std::default_random_engine{seed};
+            auto dist = std::uniform_int_distribution{a, b};
             return dist(randEngine);
         }
 
@@ -75,7 +75,7 @@ namespace mazes {
         /// cardinal directions and are a distance of two away. They are two away so that the wall
         /// inbetween is jumped.
         std::list<Point> getNeighbours(unsigned gridSize, Point p) {
-            std::list<Point> newNodes;
+            auto newNodes = std::list<Point>{};
             newNodes.push_back({p.x - 2, p.y});
             newNodes.push_back({p.x, p.y - 2});
             newNodes.push_back({p.x, p.y + 2});
@@ -93,9 +93,8 @@ namespace mazes {
             for (unsigned i = 0; i < index; i++) {
                 it++;
             }
-            Point p = *it;
             points.erase(it);
-            return p;
+            return *it;
         }
 
         /// Check if a point is a horizontal corridor. That is, it has corridors to the left and
@@ -129,30 +128,31 @@ namespace mazes {
 
         /// Generate maze with Prims method
         void generatePrims(std::vector<std::vector<bool>>& grid) {
-            const auto size = grid.size();
+            auto const size = grid.size();
 
             // Randomly generate initial point
-            Point init(randInt(0, (size - 2) / 2) * 2 + 1, randInt(0, (size - 2) / 2) * 2 + 1);
+            auto init =
+                Point{randInt(0, (size - 2) / 2) * 2 + 1, randInt(0, (size - 2) / 2) * 2 + 1};
             grid[init.x][init.y] = true;
 
             // Generate frontier points from neighbours
-            std::list<Point> frontierPoints{getNeighbours(size, init)};
+            auto frontierPoints = std::list<Point>{getNeighbours(size, init)};
 
             // Expand maze until grid is full
             while (!frontierPoints.empty()) {
                 // Pick random frontier point and set it to true
-                Point p1{popPoint(frontierPoints)};
+                auto p1 = Point{popPoint(frontierPoints)};
                 grid[p1.x][p1.y] = true;
 
                 // Pick a random neighbours which is a pathway, and link the two points by setting
                 // the intermediate point to a pathway
-                std::list<Point> neighbours{getNeighbours(size, p1)};
+                auto neighbours = std::list<Point>{getNeighbours(size, p1)};
                 neighbours.remove_if([&grid](Point p) { return !grid[p.x][p.y]; });
-                Point p2{popPoint(neighbours)};
+                auto p2 = Point{popPoint(neighbours)};
                 grid[p2.x - (p2.x - p1.x) / 2][p2.y - (p2.y - p1.y) / 2] = true;
 
                 // Find and add the new frontier points
-                std::list<Point> newFrontierPoints{getNeighbours(size, p1)};
+                auto newFrontierPoints = std::list<Point>{getNeighbours(size, p1)};
                 newFrontierPoints.remove_if([&grid](Point p) { return grid[p.x][p.y]; });
                 frontierPoints.merge(newFrontierPoints);
                 frontierPoints.unique();
@@ -161,12 +161,12 @@ namespace mazes {
 
         std::list<std::pair<Point, Point>> divideChamber(std::vector<std::vector<bool>>& grid,
                                                          std::pair<Point, Point> chamber) {
-            const auto x1 = chamber.first.x;
-            const auto y1 = chamber.first.y;
-            const auto x2 = chamber.second.x;
-            const auto y2 = chamber.second.y;
-            const auto size = x2 - x1;
-            const auto mid = (size + 1) / 2;
+            auto const x1 = chamber.first.x;
+            auto const y1 = chamber.first.y;
+            auto const x2 = chamber.second.x;
+            auto const y2 = chamber.second.y;
+            auto const size = x2 - x1;
+            auto const mid = (size + 1) / 2;
 
             if (size < 2) {
                 return {};
@@ -188,7 +188,7 @@ namespace mazes {
             }
 
             // Create openings in walls
-            const auto rand = [mid]() { return randInt(0, mid / 2) * 2; };
+            auto const rand = [mid]() { return randInt(0, mid / 2) * 2; };
             auto openings = std::vector<Point>{{x1 + mid, y1 + rand()},
                                                {x1 + mid, y1 + mid + 1 + rand()},
                                                {x1 + rand(), y1 + mid},
@@ -208,9 +208,9 @@ namespace mazes {
 
         /// Generate maze with recursive division method
         void generateDivision(std::vector<std::vector<bool>>& grid) {
-            const auto size = static_cast<int>(grid.size());
+            auto const size = static_cast<int>(grid.size());
 
-            std::deque<std::pair<Point, Point>> chambers;
+            auto chambers = std::deque<std::pair<Point, Point>>{};
             chambers.push_back({{1, 1}, {size - 2, size - 2}});
 
             while (!chambers.empty()) {
@@ -225,7 +225,7 @@ namespace mazes {
         /// Remove walls to create multiple paths in the maze. Pick random points until a valid
         /// wall is found, then set it to be a pathway
         void addLoops(std::vector<std::vector<bool>>& grid, double loopFactor) {
-            const auto size = grid.size();
+            auto const size = grid.size();
             const unsigned loops = size * size * loopFactor * loopFactor;
             for (unsigned i = 0; i < loops; i++) {
                 Point p;
@@ -238,7 +238,7 @@ namespace mazes {
 
         /// Add the entrance and exit of the maze
         void addEntranceAndExit(std::vector<std::vector<bool>>& grid) {
-            const auto size = grid.size();
+            auto const size = grid.size();
             grid[1][0] = true;
             grid[size - 2][size - 1] = true;
         }
@@ -279,23 +279,23 @@ namespace mazes {
             using Edge = Maze::Edge;
 
             const int size = grid.size();
-            std::list<std::shared_ptr<Node>> graph; // A list of nodes in the graph
-            std::list<std::shared_ptr<Node>> above; // A list of nodes that are above the current
+            auto graph = std::list<std::shared_ptr<Node>>{}; // nodes in the graph
+            auto above = std::list<std::shared_ptr<Node>>{}; // nodes that are above current
 
             // Add start node
-            std::shared_ptr<Node> first = std::make_shared<Node>(1, 0, std::list<Edge>{});
+            auto first = std::make_shared<Node>(1, 0, std::list<Edge>{});
             graph.push_back(first);
             above.push_back(first);
 
             // Iterate through whole grid
             for (int j = 1; j < size; j++) {
-                std::shared_ptr<Node> left{nullptr}; // The node that is to the left of present
-                auto nodeAbove = above.begin();      // Iterator to start of above nodes
+                auto left = std::shared_ptr<Node>{nullptr}; // The node that is left of present
+                auto nodeAbove = above.begin();             // Iterator to start of above nodes
                 for (int i = 1; i < size - 1; i++) {
                     if (grid[i][j]) {
                         // Ignore point if it is a corridor
                         if (!isHCorridor({i, j}, grid) && !isVCorridor({i, j}, grid)) {
-                            std::list<Edge> edges;
+                            auto edges = std::list<Edge>{};
 
                             // Add edge if there is a node to the left
                             if (left) {
@@ -311,13 +311,13 @@ namespace mazes {
                             }
 
                             // Create the node
-                            std::shared_ptr<Node> node = std::make_shared<Node>(i, j, edges);
+                            auto node = std::make_shared<Node>(i, j, edges);
                             graph.push_back(node);
                             above.insert(nodeAbove, node);
                             left = node;
 
                             // Add edges to this node from all edges
-                            for (Edge const& edge : edges) {
+                            for (auto const& edge : edges) {
                                 edge.node->edges.push_back({node, edge.cost});
                             }
                         }
@@ -376,12 +376,12 @@ namespace mazes {
     // Print the graph nodes over the maze to stdout
     void Maze::printGraph() const {
         // Create grid where nodes are true
-        std::vector<std::vector<bool>> graphGrid;
+        auto graphGrid = std::vector<std::vector<bool>>{};
         graphGrid.resize(size_);
         for (unsigned i = 0; i < size_; i++) {
             graphGrid[i].resize(size_, false);
         }
-        for (std::shared_ptr<Node> nodePtr : graph_) {
+        for (auto nodePtr : graph_) {
             graphGrid[nodePtr->x][nodePtr->y] = true;
         }
 
@@ -409,7 +409,7 @@ namespace mazes {
 
     // Write the maze to PNG
     void Maze::writePng(std::string_view filename) const {
-        png::image<png::rgb_pixel> image{size_, size_};
+        auto image = png::image<png::rgb_pixel>{size_, size_};
         for (unsigned j = 0; j < size_; j++) {
             for (unsigned i = 0; i < size_; i++) {
                 if (grid_[i][j]) {
@@ -424,7 +424,7 @@ namespace mazes {
 
     // Write the graph nodes over the maze to PNG
     void Maze::writePngGraph(std::string_view filename) const {
-        png::image<png::rgb_pixel> image{size_, size_};
+        auto image = png::image<png::rgb_pixel>{size_, size_};
 
         // Write maze
         for (unsigned j = 0; j < size_; j++) {
@@ -438,7 +438,7 @@ namespace mazes {
         }
 
         // Write graph
-        for (std::shared_ptr<Node> nodePtr : graph_) {
+        for (auto nodePtr : graph_) {
             image[nodePtr->y][nodePtr->x] = png::rgb_pixel(255, 0, 0);
         }
 
@@ -448,7 +448,7 @@ namespace mazes {
     // Write the maze with a given path to PNG
     void Maze::writePngPath(std::list<std::shared_ptr<Node>> path,
                             std::string_view filename) const {
-        png::image<png::rgb_pixel> image{size_, size_};
+        auto image = png::image<png::rgb_pixel>{size_, size_};
 
         // Write maze
         for (unsigned j = 0; j < size_; j++) {
@@ -462,11 +462,11 @@ namespace mazes {
         }
 
         // Write path
-        detail::Point prev = {path.front()->x, path.front()->y};
+        auto prev = detail::Point{path.front()->x, path.front()->y};
         for (auto const& node : path) {
-            detail::Point start = {std::min(prev.x, node->x), std::min(prev.y, node->y)};
-            detail::Point end = {std::max(prev.x + 1, node->x + 1),
-                                 std::max(prev.y + 1, node->y + 1)};
+            auto start = detail::Point{std::min(prev.x, node->x), std::min(prev.y, node->y)};
+            auto end =
+                detail::Point{std::max(prev.x + 1, node->x + 1), std::max(prev.y + 1, node->y + 1)};
             for (int i = start.x; i != end.x; i++) {
                 for (int j = start.y; j != end.y; j++) {
                     image[j][i] = png::rgb_pixel(255, 0, 0);

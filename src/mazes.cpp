@@ -11,7 +11,7 @@
 using hr_clock = std::chrono::high_resolution_clock;
 
 int main(int argc, char* argv[]) {
-    const auto opts = mazes::CommandLineOptions{argc, argv};
+    auto const opts = mazes::CommandLineOptions{argc, argv};
 
     if (opts.help()) {
         opts.printOptions();
