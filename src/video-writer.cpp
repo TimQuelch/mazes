@@ -75,6 +75,7 @@ namespace mazes {
             frame->format = format;
             frame->width = width;
             frame->height = height;
+            frame->pts = 0;
 
             int ret = av_frame_get_buffer(frame, 0);
             checkReturn("Could not allocate frame buffer", ret);
