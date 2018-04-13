@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze,
-                                       "vidBfs.webm",
+                                       "vidBfs.mp4",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
                                        opts.nUpdatesPerFrame(),
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze,
-                                       "vidDfs.webm",
+                                       "vidDfs.mp4",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
                                        opts.nUpdatesPerFrame(),
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze,
-                                       "vidDij.webm",
+                                       "vidDij.mp4",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
                                        opts.nUpdatesPerFrame(),
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
         std::optional<mazes::VideoWriter> video;
         if (opts.writeVideo()) {
             video = mazes::VideoWriter{maze,
-                                       "vidAst.webm",
+                                       "vidAst.mp4",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
                                        opts.nUpdatesPerFrame(),
