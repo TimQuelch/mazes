@@ -82,6 +82,10 @@ namespace mazes {
         if (vm["maze-method"].as<std::string>() == "prims") {
             mazeMethod_ = Maze::Method::prims;
         } else if (vm["maze-method"].as<std::string>() == "division") {
+            if (((mazeSize_ - 1) & (mazeSize_ - 2)) != 0) {
+                throw std::runtime_error{"When division method is used, maze size must "
+                                         "be in the form 'size = 2^n + 1'"};
+            }
             mazeMethod_ = Maze::Method::division;
         } else {
             std::ostringstream os;
