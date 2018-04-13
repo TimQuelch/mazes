@@ -40,8 +40,7 @@ namespace mazes {
             auto prev = path.cbegin();
             auto next = prev++;
             while (prev != path.cend()) {
-                video.updateLine(
-                    (*prev)->x, (*prev)->y, (*next)->x, (*next)->y, VideoWriter::Tile::path);
+                video.updateLine((*prev)->x, (*prev)->y, (*next)->x, (*next)->y, Tile::path);
                 video.writeUpdate();
                 prev++;
                 next++;
@@ -80,8 +79,7 @@ namespace mazes {
             if (video) {
                 auto const prev = paths[current];
                 if (prev) {
-                    video->updateLine(
-                        prev->x, prev->y, current->x, current->y, VideoWriter::Tile::visited);
+                    video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
             }
 
@@ -107,7 +105,7 @@ namespace mazes {
                                               current->y,
                                               edge.node->x,
                                               edge.node->y,
-                                              VideoWriter::Tile::discovered);
+                                              Tile::discovered);
                         }
                     }
                 }
@@ -141,8 +139,7 @@ namespace mazes {
             if (video) {
                 auto const prev = paths[current];
                 if (prev) {
-                    video->updateLine(
-                        prev->x, prev->y, current->x, current->y, VideoWriter::Tile::visited);
+                    video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
             }
 
@@ -168,7 +165,7 @@ namespace mazes {
                                               current->y,
                                               edge.node->x,
                                               edge.node->y,
-                                              VideoWriter::Tile::discovered);
+                                              Tile::discovered);
                         }
                     }
                 }
@@ -208,8 +205,7 @@ namespace mazes {
             if (video) {
                 auto const prev = paths[current];
                 if (prev) {
-                    video->updateLine(
-                        prev->x, prev->y, current->x, current->y, VideoWriter::Tile::visited);
+                    video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
             }
 
@@ -236,7 +232,7 @@ namespace mazes {
                                               current->y,
                                               edge.node->x,
                                               edge.node->y,
-                                              VideoWriter::Tile::discovered);
+                                              Tile::discovered);
                         }
                     }
                 }
@@ -286,8 +282,7 @@ namespace mazes {
             if (video) {
                 auto const prev = paths[current];
                 if (prev) {
-                    video->updateLine(
-                        prev->x, prev->y, current->x, current->y, VideoWriter::Tile::visited);
+                    video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
             }
 
@@ -314,7 +309,7 @@ namespace mazes {
                                               current->y,
                                               edge.node->x,
                                               edge.node->y,
-                                              VideoWriter::Tile::discovered);
+                                              Tile::discovered);
                         }
                     }
                 }

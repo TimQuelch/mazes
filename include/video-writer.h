@@ -24,23 +24,55 @@ namespace mazes {
     // Forward declaration for Maze
     class Maze;
 
+    /// Describes what type of maze tile.
+    enum class Tile { wall, passage, visited, discovered, path };
+
+    /// Simple struct to store a colour
+    struct Colour {
+        unsigned char r; ///< Red value
+        unsigned char g; ///< Green value
+        unsigned char b; ///< Blue value
+    };
+
+    /// Colour of the walls of the maze
+    auto constexpr wallColour = Colour{0, 0, 0};
+    /// Colour of the passages of the maze
+    auto constexpr passageColour = Colour{255, 255, 255};
+    /// Colour of the visited tiles
+    auto constexpr visitedColour = Colour{255, 0, 0};
+    /// Final colour of the gradient of the visible tiles
+    auto constexpr visitedFinalColour = Colour{127, 255, 0};
+    /// Colour of discovered nodes
+    auto constexpr discoveredColour = Colour{0, 255, 0};
+    /// Colour of the final path
+    auto constexpr pathColour = Colour{0, 0, 255};
+
+    /// Get the colour for a tile
+    /// \param tile The tile to get the corresponding colour for
+    /// \returns The colour of the tile
+    constexpr Colour tileToColour(Tile tile);
+    /// Get the colour for a tile
+    /// \param tile The tile to get the corresponding colour for
+    /// \param gradient The current gradient. 0 < gradient < 1
+    /// \returns The colour of the tile
+    constexpr Colour tileToColour(Tile tile, double gradient);
+
     /// Writes stages of the solution of the maze to a video file.
     class VideoWriter {
     public:
-        /// Describes what type of maze tile.
-        enum class Tile { wall, passage, visited, discovered, path };
-
         /// Construct with specified values.
         /// \param maze The maze to write to the video file
         /// \param filename The file to write the video to
         /// \param frameRate The framerate of the produced video
         /// \param pixelsPerTile The number of pixels per maze tile
         /// \param nUpdatesPerFrame The number of updates per video frame
+        /// \param gradientRate The rate to change the gradient of the path. Should be <<1
         VideoWriter(Maze const& maze,
                     std::string_view filename,
                     unsigned frameRate,
                     unsigned pixelsPerTile,
-                    unsigned nUpdatesPerFrame);
+                    unsigned nUpdatesPerFrame,
+                    double gradientRate);
 
         VideoWriter() = default;
 
@@ -97,6 +129,9 @@ namespace mazes {
         unsigned frameRate_{60};       ///< The frame rate of the video
         unsigned frameCounter_{0};     ///< The current frame
         unsigned nUpdatesPerFrame_{2}; ///< The number of updates per frame
+
+        unsigned gradientCounter_{0}; ///< Counter to determine the current gradient
+        double gradientRate_{0.0};    ///< The rate of change of the gradient [0, 1]
     };
 } // namespace mazes
 

@@ -37,7 +37,8 @@ int main(int argc, char* argv[]) {
                                        "vidBfs.webm",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame()};
+                                       opts.nUpdatesPerFrame(),
+                                       opts.gradientRate()};
         }
         auto bfs = solveBfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -53,7 +54,8 @@ int main(int argc, char* argv[]) {
                                        "vidDfs.webm",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame()};
+                                       opts.nUpdatesPerFrame(),
+                                       opts.gradientRate()};
         }
         auto dfs = solveDfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -69,7 +71,8 @@ int main(int argc, char* argv[]) {
                                        "vidDij.webm",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame()};
+                                       opts.nUpdatesPerFrame(),
+                                       opts.gradientRate()};
         }
         auto dij = solveDijkstra(maze, *maze.getStartNode(), *maze.getEndNode(), video);
         d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
@@ -85,7 +88,8 @@ int main(int argc, char* argv[]) {
                                        "vidAst.webm",
                                        opts.frameRate(),
                                        opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame()};
+                                       opts.nUpdatesPerFrame(),
+                                       opts.gradientRate()};
         }
         auto ast = solveAstar(
             maze, *maze.getStartNode(), *maze.getEndNode(), video, opts.astarHeuristicWeighting());

@@ -43,7 +43,9 @@ namespace mazes {
             ("pixels-per-tile", po::value<unsigned>()->default_value(defaultPixelsPerTile_),
              "The number of pixels per tile. This should be an even number")
             ("updates-per-frame", po::value<unsigned>()->default_value(defaultNUpdatesPerFrame_),
-             "The number of updates per frame");
+             "The number of updates per frame")
+            ("gradient", po::value<double>()->default_value(defaultGradientRate_),
+             "The rate the gradient of the path changes");
         imageOptions.add_options()
             ("save-maze", "save maze to image file");
         // clang-format on
@@ -73,6 +75,7 @@ namespace mazes {
         frameRate_ = vm["frame-rate"].as<unsigned>();
         pixelsPerTile_ = vm["pixels-per-tile"].as<unsigned>();
         nUpdatesPerFrame_ = vm["updates-per-frame"].as<unsigned>();
+        gradientRate_ = vm["gradient"].as<double>();
 
         saveMazeImage_ = vm.count("save-maze");
 

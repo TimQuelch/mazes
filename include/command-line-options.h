@@ -63,6 +63,9 @@ namespace mazes {
         /// Get the number of updates per frame
         /// \returns The number updates per frame
         unsigned nUpdatesPerFrame() const { return nUpdatesPerFrame_; }
+        /// Get the gradient rate
+        /// \returns The gradient rate
+        double gradientRate() const { return gradientRate_; }
 
         /// Get whether the save-maze flag was passed
         /// \returns true if save-maze flag is passed
@@ -96,10 +99,12 @@ namespace mazes {
         unsigned frameRate_;        ///< The frame rate
         unsigned pixelsPerTile_;    ///< The number of pixels per tile
         unsigned nUpdatesPerFrame_; ///< The number of updates per frame
+        double gradientRate_;       ///< The rate the gradient of the path changes
 
         static constexpr unsigned defaultFrameRate_{60};       ///< The default frame rate
         static constexpr unsigned defaultPixelsPerTile_{2};    ///< The default pixels per tile
         static constexpr unsigned defaultNUpdatesPerFrame_{2}; ///< The default updates per frame
+        static constexpr double defaultGradientRate_{0.0005};  ///< The default gradient rate
 
         bool saveMazeImage_; ///< True if the maze should be saved as an image
     };

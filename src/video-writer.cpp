@@ -16,44 +16,6 @@ extern "C" {
 
 namespace mazes {
     namespace detail {
-
-        /// Holds the RGB values for a pixel
-        struct Pixel {
-            const unsigned char r; ///< The red value of the pixel
-            const unsigned char g; ///< The green value of the pixel
-            const unsigned char b; ///< The blue value of the pixel
-
-            /// Construct the pixel with specified values
-            /// \param r The red value
-            /// \param g The green value
-            /// \param b The blue value
-            Pixel(unsigned char r, unsigned char g, unsigned char b)
-                : r{r}
-                , g{g}
-                , b{b} {}
-        };
-
-        Pixel tileToPixel(VideoWriter::Tile tile) {
-            switch (tile) {
-            case VideoWriter::Tile::wall:
-                return {0, 0, 0};
-                break;
-            case VideoWriter::Tile::passage:
-                return {255, 255, 255};
-                break;
-            case VideoWriter::Tile::visited:
-                return {255, 0, 0};
-                break;
-            case VideoWriter::Tile::discovered:
-                return {0, 255, 0};
-                break;
-            case VideoWriter::Tile::path:
-                return {0, 0, 255};
-                break;
-            }
-            return {0, 0, 0};
-        }
-
         void checkReturn(std::string const& message, int returnVal) {
             if (returnVal < 0) {
                 char err[AV_ERROR_MAX_STRING_SIZE];
@@ -196,15 +158,52 @@ namespace mazes {
                 checkReturn("Error while writing frame: ", writeRet);
             }
         }
+
+        constexpr Colour interpolateColour(Colour one, Colour two, double gradient) {
+            one.r += (two.r - one.r) * (gradient < 1 ? gradient : 1);
+            one.g += (two.g - one.g) * (gradient < 1 ? gradient : 1);
+            one.b += (two.b - one.b) * (gradient < 1 ? gradient : 1);
+            return one;
+        }
     } // namespace detail
+
+    constexpr Colour tileToColour(Tile tile) {
+        switch (tile) {
+        case Tile::wall:
+            return wallColour;
+            break;
+        case Tile::passage:
+            return passageColour;
+            break;
+        case Tile::visited:
+            return visitedColour;
+            break;
+        case Tile::discovered:
+            return discoveredColour;
+            break;
+        case Tile::path:
+            return pathColour;
+            break;
+        }
+    }
+
+    constexpr Colour tileToColour(Tile tile, double gradient) {
+        if (tile == Tile::visited) {
+            return detail::interpolateColour(visitedColour, visitedFinalColour, gradient);
+        } else {
+            return tileToColour(tile);
+        }
+    }
 
     VideoWriter::VideoWriter(Maze const& maze,
                              std::string_view filename,
                              unsigned frameRate,
                              unsigned pixelsPerTile,
-                             unsigned nUpdatesPerFrame)
+                             unsigned nUpdatesPerFrame,
+                             double gradientRate)
         : frameRate_{frameRate}
-        , nUpdatesPerFrame_{nUpdatesPerFrame} {
+        , nUpdatesPerFrame_{nUpdatesPerFrame}
+        , gradientRate_{gradientRate} {
         av_log_set_level(AV_LOG_WARNING);
         av_register_all();
 
@@ -258,7 +257,8 @@ namespace mazes {
         , swsContext_{other.swsContext_}
         , frameRate_{other.frameRate_}
         , frameCounter_{other.frameCounter_}
-        , nUpdatesPerFrame_{other.nUpdatesPerFrame_} {
+        , nUpdatesPerFrame_{other.nUpdatesPerFrame_}
+        , gradientRate_{other.gradientRate_} {
         other.outContext_ = nullptr;
         other.codecContext_ = nullptr;
         other.stream_ = nullptr;
@@ -301,7 +301,10 @@ namespace mazes {
         int ret = av_frame_make_writable(rgbFrame_);
         detail::checkReturn("Could not make frame writable: ", ret);
 
-        const detail::Pixel pixel{detail::tileToPixel(tile)};
+        auto const pixel = tileToColour(tile, gradientCounter_ * gradientRate_);
+        if (tile == Tile::discovered) {
+            gradientCounter_++;
+        }
         rgbFrame_->data[0][y * rgbFrame_->linesize[0] + 3 * x + 0] = pixel.r;
         rgbFrame_->data[0][y * rgbFrame_->linesize[0] + 3 * x + 1] = pixel.g;
         rgbFrame_->data[0][y * rgbFrame_->linesize[0] + 3 * x + 2] = pixel.b;
