@@ -101,6 +101,7 @@ namespace mazes {
                                    int frameRate) {
             context->codec_id = codecId;
             context->bit_rate = 400000;
+            context->qmax = 10;
             context->width = width;
             context->height = height;
             context->time_base = AVRational{1, frameRate};
