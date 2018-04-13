@@ -104,7 +104,7 @@ namespace mazes {
         static constexpr unsigned defaultFrameRate_{60};       ///< The default frame rate
         static constexpr unsigned defaultPixelsPerTile_{2};    ///< The default pixels per tile
         static constexpr unsigned defaultNUpdatesPerFrame_{2}; ///< The default updates per frame
-        static constexpr double defaultGradientRate_{0.0005};  ///< The default gradient rate
+        static constexpr double defaultGradientRate_{0.0};  ///< The default gradient rate
 
         bool saveMazeImage_; ///< True if the maze should be saved as an image
     };
