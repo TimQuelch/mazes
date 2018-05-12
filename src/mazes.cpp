@@ -17,12 +17,15 @@ void runSolution(std::string_view name,
                  mazes::Maze const& maze,
                  Solver&& solver,
                  Ts... solverArgs) {
+    static const auto vidExtension = ".mp4";
+    static const auto imgExtension = ".png";
+
     std::cout << "Solving using " << name << "... " << std::flush;
     const auto start = hr_clock::now();
     std::optional<mazes::VideoWriter> video;
     if (opts.writeVideo()) {
         video = mazes::VideoWriter{maze,
-                                   "vid" + std::string{filename} + ".mp4",
+                                   "vid" + std::string{filename} + vidExtension,
                                    opts.frameRate(),
                                    opts.pixelsPerTile(),
                                    opts.nUpdatesPerFrame(),
@@ -30,7 +33,7 @@ void runSolution(std::string_view name,
     }
     const auto soln = solver(maze, *maze.getStartNode(), *maze.getEndNode(), video, solverArgs...);
     if (opts.saveSolutionImages()) {
-        maze.writePngPath(soln, "soln" + std::string{filename} + ".png");
+        maze.writePngPath(soln, "img" + std::string{filename} + imgExtension);
     }
     const auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
