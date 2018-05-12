@@ -15,10 +15,7 @@ namespace mazes {
         struct Edge;
 
         /// The method to generate the maze
-        enum class Method {
-            prims,
-            division
-        };
+        enum class Method { prims, division };
 
         /// A Node in graph of the maze
         struct Node {
@@ -65,11 +62,11 @@ namespace mazes {
 
         /// Get the the grid of the Maze. Tiles that are true are corridors
         /// \returns The grid of the Maze
-        std::vector<std::vector<bool>> const& getGrid() const { return grid_; }
+        const std::vector<std::vector<bool>>& getGrid() const { return grid_; }
 
         /// Gets a list of all the Nodes in the maze graph
         /// \returns A list of all the Nodes in the maze graph
-        std::list<std::shared_ptr<Node>> const& getGraph() const { return graph_; }
+        const std::list<std::shared_ptr<Node>>& getGraph() const { return graph_; }
 
         /// Gets the start Node. At this stage this is the first in the sorted list of Nodes, which,
         /// when sorted by coordinate is the top left node.

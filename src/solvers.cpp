@@ -21,9 +21,9 @@ constexpr auto freezeDuration = 2000ms;
 namespace mazes {
     namespace detail {
         std::list<std::shared_ptr<Maze::Node>>
-        reconstructPath(std::unordered_map<Maze::Node const*, Maze::Node const*> paths,
-                        Maze::Node const* end,
-                        std::list<std::shared_ptr<Maze::Node>> const& graph) {
+        reconstructPath(std::unordered_map<const Maze::Node*, const Maze::Node*> paths,
+                        const Maze::Node* end,
+                        const std::list<std::shared_ptr<Maze::Node>>& graph) {
             auto path = std::list<std::shared_ptr<Maze::Node>>{};
             auto current = end;
             while (current) {
@@ -36,7 +36,7 @@ namespace mazes {
             return path;
         }
 
-        void writePath(VideoWriter& video, std::list<std::shared_ptr<Maze::Node>> const& path) {
+        void writePath(VideoWriter& video, const std::list<std::shared_ptr<Maze::Node>>& path) {
             auto prev = path.cbegin();
             auto next = prev++;
             while (prev != path.cend()) {
@@ -48,36 +48,36 @@ namespace mazes {
         }
 
         template <typename Container>
-        bool contains(Container container, typename Container::value_type const& value) {
+        bool contains(Container container, const typename Container::value_type& value) {
             return std::find(container.begin(), container.end(), value) != container.end();
         }
 
         template <typename T>
-        bool contains(std::unordered_set<T> container, T const& value) {
+        bool contains(std::unordered_set<T> container, const T& value) {
             return container.find(value) != container.end();
         }
     } // namespace detail
 
-    std::list<std::shared_ptr<Maze::Node>> solveBfs(Maze const& maze,
-                                                    Maze::Node const& start,
-                                                    Maze::Node const& end,
+    std::list<std::shared_ptr<Maze::Node>> solveBfs(const Maze& maze,
+                                                    const Maze::Node& start,
+                                                    const Maze::Node& end,
                                                     std::optional<VideoWriter>& video) {
-        auto const graph = maze.getGraph();
+        const auto graph = maze.getGraph();
 
-        auto queue = std::queue<Maze::Node const*>{};
-        auto visited = std::unordered_set<Maze::Node const*>{};
-        auto paths = std::unordered_map<Maze::Node const*, Maze::Node const*>{};
+        auto queue = std::queue<const Maze::Node*>{};
+        auto visited = std::unordered_set<const Maze::Node*>{};
+        auto paths = std::unordered_map<const Maze::Node*, const Maze::Node*>{};
 
         // Add first node
         queue.push(&start);
         paths[&start] = nullptr;
 
         while (!queue.empty()) {
-            auto const current = queue.front();
+            const auto current = queue.front();
             queue.pop();
 
             if (video) {
-                auto const prev = paths[current];
+                const auto prev = paths[current];
                 if (prev) {
                     video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
@@ -86,7 +86,7 @@ namespace mazes {
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (current == &end) {
-                    auto const path = detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
                     if (video) {
                         detail::writePath(*video, path);
                         video->writeFreezeFrame(freezeDuration);
@@ -118,26 +118,26 @@ namespace mazes {
     }
 
     // Solve the maze using depth first search
-    std::list<std::shared_ptr<Maze::Node>> solveDfs(Maze const& maze,
-                                                    Maze::Node const& start,
-                                                    Maze::Node const& end,
+    std::list<std::shared_ptr<Maze::Node>> solveDfs(const Maze& maze,
+                                                    const Maze::Node& start,
+                                                    const Maze::Node& end,
                                                     std::optional<VideoWriter>& video) {
-        auto const graph = maze.getGraph();
+        const auto graph = maze.getGraph();
 
-        auto stack = std::stack<Maze::Node const*>{};
-        auto visited = std::unordered_set<Maze::Node const*>{};
-        auto paths = std::unordered_map<Maze::Node const*, Maze::Node const*>{};
+        auto stack = std::stack<const Maze::Node*>{};
+        auto visited = std::unordered_set<const Maze::Node*>{};
+        auto paths = std::unordered_map<const Maze::Node*, const Maze::Node*>{};
 
         // Add first node
         stack.push(&start);
         paths[&start] = nullptr;
 
         while (!stack.empty()) {
-            auto const current = stack.top();
+            const auto current = stack.top();
             stack.pop();
 
             if (video) {
-                auto const prev = paths[current];
+                const auto prev = paths[current];
                 if (prev) {
                     video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
@@ -146,7 +146,7 @@ namespace mazes {
             if (!detail::contains(visited, current)) {
                 // Return if path is found
                 if (&(*current) == &end) {
-                    auto const path = detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
                     if (video) {
                         detail::writePath(*video, path);
                         video->writeFreezeFrame(freezeDuration);
@@ -178,21 +178,21 @@ namespace mazes {
     }
 
     // Solve the maze using Djikstra's algorithm
-    std::list<std::shared_ptr<Maze::Node>> solveDijkstra(Maze const& maze,
-                                                         Maze::Node const& start,
-                                                         Maze::Node const& end,
+    std::list<std::shared_ptr<Maze::Node>> solveDijkstra(const Maze& maze,
+                                                         const Maze::Node& start,
+                                                         const Maze::Node& end,
                                                          std::optional<VideoWriter>& video) {
         const auto graph = maze.getGraph();
 
-        auto costs = std::unordered_map<Maze::Node const*, int>{};
-        auto paths = std::unordered_map<Maze::Node const*, Maze::Node const*>{};
+        auto costs = std::unordered_map<const Maze::Node*, int>{};
+        auto paths = std::unordered_map<const Maze::Node*, const Maze::Node*>{};
         paths[&start] = nullptr;
 
-        using CostNode = std::pair<Maze::Node const*, int>;
-        auto cmp = [](auto const& one, auto const& two) { return one.second > two.second; };
+        using CostNode = std::pair<const Maze::Node*, int>;
+        auto cmp = [](const auto& one, const auto& two) { return one.second > two.second; };
         auto queue = std::priority_queue<CostNode, std::vector<CostNode>, decltype(cmp)>{cmp};
 
-        for (auto const& node : graph) {
+        for (const auto& node : graph) {
             costs[node.get()] = std::numeric_limits<int>::max();
         }
         costs[&start] = 0;
@@ -203,7 +203,7 @@ namespace mazes {
             queue.pop();
 
             if (video) {
-                auto const prev = paths[current];
+                const auto prev = paths[current];
                 if (prev) {
                     video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }
@@ -211,7 +211,7 @@ namespace mazes {
 
             if (poppedCost == costs[current]) {
                 if (current == &end) {
-                    auto const path = detail::reconstructPath(paths, current, graph);
+                    const auto path = detail::reconstructPath(paths, current, graph);
                     if (video) {
                         detail::writePath(*video, path);
                         video->writeFreezeFrame(freezeDuration);
@@ -245,42 +245,42 @@ namespace mazes {
     }
 
     // Solve the maze using A*
-    std::list<std::shared_ptr<Maze::Node>> solveAstar(Maze const& maze,
-                                                      Maze::Node const& start,
-                                                      Maze::Node const& end,
+    std::list<std::shared_ptr<Maze::Node>> solveAstar(const Maze& maze,
+                                                      const Maze::Node& start,
+                                                      const Maze::Node& end,
                                                       std::optional<VideoWriter>& video,
                                                       double heuristicWeighting) {
-        auto const graph = maze.getGraph();
+        const auto graph = maze.getGraph();
 
-        auto costs = std::unordered_map<Maze::Node const*, int>{};
-        auto paths = std::unordered_map<Maze::Node const*, Maze::Node const*>{};
+        auto costs = std::unordered_map<const Maze::Node*, int>{};
+        auto paths = std::unordered_map<const Maze::Node*, const Maze::Node*>{};
         paths[&start] = nullptr;
 
-        auto distance = [&end, heuristicWeighting](Maze::Node const* node) -> int {
+        auto distance = [&end, heuristicWeighting](const Maze::Node* node) -> int {
             static const int ex = end.x;
             static const int ey = end.y;
             return heuristicWeighting * std::ceil(std::sqrt((ex - node->x) * (ex - node->x) +
                                                             (ey - node->y) * (ey - node->y)));
         };
 
-        using CostNode = std::pair<Maze::Node const*, int>;
-        auto cmp = [](CostNode const& one, CostNode const& two) { return one.second > two.second; };
+        using CostNode = std::pair<const Maze::Node*, int>;
+        auto cmp = [](const CostNode& one, const CostNode& two) { return one.second > two.second; };
         auto queue = std::priority_queue<CostNode, std::vector<CostNode>, decltype(cmp)>{cmp};
 
-        for (auto const& node : graph) {
+        for (const auto& node : graph) {
             costs[node.get()] = std::numeric_limits<int>::max();
         }
         costs[&start] = 0;
         queue.push(std::make_pair(&start, costs[&start] + distance(&start)));
 
         while (!queue.empty()) {
-            Maze::Node const* current;
+            const Maze::Node* current;
             int poppedCost;
             std::tie(current, poppedCost) = queue.top();
             queue.pop();
 
             if (video) {
-                auto const prev = paths[current];
+                const auto prev = paths[current];
                 if (prev) {
                     video->updateLine(prev->x, prev->y, current->x, current->y, Tile::visited);
                 }

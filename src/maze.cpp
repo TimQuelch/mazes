@@ -99,14 +99,14 @@ namespace mazes {
 
         /// Check if a point is a horizontal corridor. That is, it has corridors to the left and
         /// right, and walls to the top and bottom
-        bool isHCorridor(Point p, std::vector<std::vector<bool>> const& grid) {
+        bool isHCorridor(Point p, const std::vector<std::vector<bool>>& grid) {
             return grid[p.x - 1][p.y] && grid[p.x + 1][p.y] && !grid[p.x][p.y - 1] &&
                    !grid[p.x][p.y + 1];
         }
 
         /// Check if a point is a vertical corridor. That is, it has corridors to the top and
         /// bottom, and walls to the left and right
-        bool isVCorridor(Point p, std::vector<std::vector<bool>> const& grid) {
+        bool isVCorridor(Point p, const std::vector<std::vector<bool>>& grid) {
             return !grid[p.x - 1][p.y] && !grid[p.x + 1][p.y] && grid[p.x][p.y - 1] &&
                    grid[p.x][p.y + 1];
         }
@@ -128,7 +128,7 @@ namespace mazes {
 
         /// Generate maze with Prims method
         void generatePrims(std::vector<std::vector<bool>>& grid) {
-            auto const size = grid.size();
+            const auto size = grid.size();
 
             // Randomly generate initial point
             auto init =
@@ -161,12 +161,12 @@ namespace mazes {
 
         std::list<std::pair<Point, Point>> divideChamber(std::vector<std::vector<bool>>& grid,
                                                          std::pair<Point, Point> chamber) {
-            auto const x1 = chamber.first.x;
-            auto const y1 = chamber.first.y;
-            auto const x2 = chamber.second.x;
-            auto const y2 = chamber.second.y;
-            auto const size = x2 - x1;
-            auto const mid = (size + 1) / 2;
+            const auto x1 = chamber.first.x;
+            const auto y1 = chamber.first.y;
+            const auto x2 = chamber.second.x;
+            const auto y2 = chamber.second.y;
+            const auto size = x2 - x1;
+            const auto mid = (size + 1) / 2;
 
             if (size < 2) {
                 return {};
@@ -188,7 +188,7 @@ namespace mazes {
             }
 
             // Create openings in walls
-            auto const rand = [mid]() { return randInt(0, mid / 2) * 2; };
+            const auto rand = [mid]() { return randInt(0, mid / 2) * 2; };
             auto openings = std::vector<Point>{{x1 + mid, y1 + rand()},
                                                {x1 + mid, y1 + mid + 1 + rand()},
                                                {x1 + rand(), y1 + mid},
@@ -208,7 +208,7 @@ namespace mazes {
 
         /// Generate maze with recursive division method
         void generateDivision(std::vector<std::vector<bool>>& grid) {
-            auto const size = static_cast<int>(grid.size());
+            const auto size = static_cast<int>(grid.size());
 
             auto chambers = std::deque<std::pair<Point, Point>>{};
             chambers.push_back({{1, 1}, {size - 2, size - 2}});
@@ -216,7 +216,7 @@ namespace mazes {
             while (!chambers.empty()) {
                 auto newChambers = divideChamber(grid, chambers.front());
                 chambers.pop_front();
-                for (auto const& c : newChambers) {
+                for (const auto& c : newChambers) {
                     chambers.push_back(c);
                 }
             }
@@ -225,7 +225,7 @@ namespace mazes {
         /// Remove walls to create multiple paths in the maze. Pick random points until a valid
         /// wall is found, then set it to be a pathway
         void addLoops(std::vector<std::vector<bool>>& grid, double loopFactor) {
-            auto const size = grid.size();
+            const auto size = grid.size();
             const unsigned loops = size * size * loopFactor * loopFactor;
             for (unsigned i = 0; i < loops; i++) {
                 Point p;
@@ -238,7 +238,7 @@ namespace mazes {
 
         /// Add the entrance and exit of the maze
         void addEntranceAndExit(std::vector<std::vector<bool>>& grid) {
-            auto const size = grid.size();
+            const auto size = grid.size();
             grid[1][0] = true;
             grid[size - 2][size - 1] = true;
         }
@@ -274,7 +274,7 @@ namespace mazes {
         /// \param grid The Maze grid to generate the graph from
         /// \returns A list of Nodes that make up the graph of the maze
         std::list<std::shared_ptr<Maze::Node>>
-        generateGraph(std::vector<std::vector<bool>> const& grid) {
+        generateGraph(const std::vector<std::vector<bool>>& grid) {
             using Node = Maze::Node;
             using Edge = Maze::Edge;
 
@@ -317,7 +317,7 @@ namespace mazes {
                             left = node;
 
                             // Add edges to this node from all edges
-                            for (auto const& edge : edges) {
+                            for (const auto& edge : edges) {
                                 edge.node->edges.push_back({node, edge.cost});
                             }
                         }
@@ -463,7 +463,7 @@ namespace mazes {
 
         // Write path
         auto prev = detail::Point{path.front()->x, path.front()->y};
-        for (auto const& node : path) {
+        for (const auto& node : path) {
             auto start = detail::Point{std::min(prev.x, node->x), std::min(prev.y, node->y)};
             auto end =
                 detail::Point{std::max(prev.x + 1, node->x + 1), std::max(prev.y + 1, node->y + 1)};

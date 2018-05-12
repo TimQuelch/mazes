@@ -13,8 +13,8 @@ using hr_clock = std::chrono::high_resolution_clock;
 template <typename Solver, typename... Ts>
 void runSolution(std::string_view name,
                  std::string_view filename,
-                 mazes::CommandLineOptions const& opts,
-                 mazes::Maze const& maze,
+                 const mazes::CommandLineOptions& opts,
+                 const mazes::Maze& maze,
                  Solver&& solver,
                  Ts... solverArgs) {
     static const auto vidExtension = ".mp4";
@@ -40,7 +40,7 @@ void runSolution(std::string_view name,
 }
 
 int main(int argc, char* argv[]) {
-    auto const opts = mazes::CommandLineOptions{argc, argv};
+    const auto opts = mazes::CommandLineOptions{argc, argv};
 
     if (opts.help()) {
         opts.printOptions();
@@ -48,9 +48,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "Generating maze... " << std::flush;
-    auto start = hr_clock::now();
-    mazes::Maze maze(opts.mazeSize(), opts.loopFactor(), opts.mazeMethod());
-    auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
+    const auto start = hr_clock::now();
+    const auto maze = mazes::Maze{opts.mazeSize(), opts.loopFactor(), opts.mazeMethod()};
+    const auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
     std::cout << "Time elapsed = " << d.count() << " ms\n";
 
     if (opts.saveMazeImage()) {

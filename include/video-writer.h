@@ -67,7 +67,7 @@ namespace mazes {
         /// \param pixelsPerTile The number of pixels per maze tile
         /// \param nUpdatesPerFrame The number of updates per video frame
         /// \param gradientRate The rate to change the gradient of the path. Should be <<1
-        VideoWriter(Maze const& maze,
+        VideoWriter(const Maze& maze,
                     std::string_view filename,
                     unsigned frameRate,
                     unsigned pixelsPerTile,

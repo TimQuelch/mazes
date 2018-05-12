@@ -16,7 +16,7 @@ extern "C" {
 
 namespace mazes {
     namespace detail {
-        void checkReturn(std::string const& message, int returnVal) {
+        void checkReturn(const std::string& message, int returnVal) {
             if (returnVal < 0) {
                 char err[AV_ERROR_MAX_STRING_SIZE];
                 av_strerror(returnVal, err, sizeof(err));
@@ -196,7 +196,7 @@ namespace mazes {
         }
     }
 
-    VideoWriter::VideoWriter(Maze const& maze,
+    VideoWriter::VideoWriter(const Maze& maze,
                              std::string_view filename,
                              unsigned frameRate,
                              unsigned pixelsPerTile,
@@ -234,7 +234,7 @@ namespace mazes {
         int ret = avformat_write_header(outContext_, NULL);
         detail::checkReturn("Error while opening output file: ", ret);
 
-        auto const& grid{maze.getGrid()};
+        const auto& grid{maze.getGrid()};
         for (unsigned j = 0; j < maze.size(); j++) {
             for (unsigned i = 0; i < maze.size(); i++) {
                 Tile tile;
@@ -302,7 +302,7 @@ namespace mazes {
         int ret = av_frame_make_writable(rgbFrame_);
         detail::checkReturn("Could not make frame writable: ", ret);
 
-        auto const pixel = tileToColour(tile, gradientCounter_ * gradientRate_);
+        const auto pixel = tileToColour(tile, gradientCounter_ * gradientRate_);
         if (tile == Tile::discovered) {
             gradientCounter_++;
         }
