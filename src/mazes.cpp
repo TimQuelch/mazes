@@ -10,6 +10,32 @@
 
 using hr_clock = std::chrono::high_resolution_clock;
 
+template <typename Solver, typename... Ts>
+void runSolution(std::string_view name,
+                 std::string_view filename,
+                 mazes::CommandLineOptions const& opts,
+                 mazes::Maze const& maze,
+                 Solver&& solver,
+                 Ts... solverArgs) {
+    std::cout << "Solving using " << name << "... " << std::flush;
+    const auto start = hr_clock::now();
+    std::optional<mazes::VideoWriter> video;
+    if (opts.writeVideo()) {
+        video = mazes::VideoWriter{maze,
+                                   "vid" + std::string{filename} + ".mp4",
+                                   opts.frameRate(),
+                                   opts.pixelsPerTile(),
+                                   opts.nUpdatesPerFrame(),
+                                   opts.gradientRate()};
+    }
+    const auto soln = solver(maze, *maze.getStartNode(), *maze.getEndNode(), video, solverArgs...);
+    if (opts.saveSolutionImages()) {
+        maze.writePngPath(soln, "soln" + std::string{filename} + ".png");
+    }
+    const auto d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
+    std::cout << "Time elapsed = " << d.count() << " ms\n";
+}
+
 int main(int argc, char* argv[]) {
     auto const opts = mazes::CommandLineOptions{argc, argv};
 
@@ -27,73 +53,16 @@ int main(int argc, char* argv[]) {
     if (opts.saveMazeImage()) {
         maze.writePng("maze.png");
     }
-
     if (opts.solveBfs()) {
-        std::cout << "Solving using BFS... " << std::flush;
-        start = hr_clock::now();
-        std::optional<mazes::VideoWriter> video;
-        if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze,
-                                       "vidBfs.mp4",
-                                       opts.frameRate(),
-                                       opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame(),
-                                       opts.gradientRate()};
-        }
-        auto bfs = solveBfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
-        d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
-        std::cout << "Time elapsed = " << d.count() << " ms\n";
+        runSolution("BFS", "Bfs", opts, maze, mazes::solveBfs);
     }
-
     if (opts.solveDfs()) {
-        std::cout << "Solving using DFS... " << std::flush;
-        start = hr_clock::now();
-        std::optional<mazes::VideoWriter> video;
-        if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze,
-                                       "vidDfs.mp4",
-                                       opts.frameRate(),
-                                       opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame(),
-                                       opts.gradientRate()};
-        }
-        auto dfs = solveDfs(maze, *maze.getStartNode(), *maze.getEndNode(), video);
-        d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
-        std::cout << "Time elapsed = " << d.count() << " ms\n";
+        runSolution("DFS", "Dfs", opts, maze, mazes::solveDfs);
     }
-
     if (opts.solveDijkstra()) {
-        std::cout << "Solving using Dijkstra... " << std::flush;
-        start = hr_clock::now();
-        std::optional<mazes::VideoWriter> video;
-        if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze,
-                                       "vidDij.mp4",
-                                       opts.frameRate(),
-                                       opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame(),
-                                       opts.gradientRate()};
-        }
-        auto dij = solveDijkstra(maze, *maze.getStartNode(), *maze.getEndNode(), video);
-        d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
-        std::cout << "Time elapsed = " << d.count() << " ms\n";
+        runSolution("Dijkstra", "Dij", opts, maze, mazes::solveDijkstra);
     }
-
     if (opts.solveAstar()) {
-        std::cout << "Solving using A*... " << std::flush;
-        start = hr_clock::now();
-        std::optional<mazes::VideoWriter> video;
-        if (opts.writeVideo()) {
-            video = mazes::VideoWriter{maze,
-                                       "vidAst.mp4",
-                                       opts.frameRate(),
-                                       opts.pixelsPerTile(),
-                                       opts.nUpdatesPerFrame(),
-                                       opts.gradientRate()};
-        }
-        auto ast = solveAstar(
-            maze, *maze.getStartNode(), *maze.getEndNode(), video, opts.astarHeuristicWeighting());
-        d = std::chrono::duration_cast<std::chrono::milliseconds>(hr_clock::now() - start);
-        std::cout << "Time elapsed = " << d.count() << " ms\n";
+        runSolution("A*", "Ast", opts, maze, mazes::solveAstar, opts.astarHeuristicWeighting());
     }
 }

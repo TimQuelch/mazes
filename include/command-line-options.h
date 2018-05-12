@@ -70,6 +70,9 @@ namespace mazes {
         /// Get whether the save-maze flag was passed
         /// \returns true if save-maze flag is passed
         bool saveMazeImage() const { return saveMazeImage_; }
+        /// Get whether the save-solution flag was passed
+        /// \returns true if save-solution flag is passed
+        bool saveSolutionImages() const { return saveSolutionImages_; }
 
     private:
         /// The options description
@@ -104,9 +107,10 @@ namespace mazes {
         static constexpr unsigned defaultFrameRate_{60};       ///< The default frame rate
         static constexpr unsigned defaultPixelsPerTile_{2};    ///< The default pixels per tile
         static constexpr unsigned defaultNUpdatesPerFrame_{2}; ///< The default updates per frame
-        static constexpr double defaultGradientRate_{0.0};  ///< The default gradient rate
+        static constexpr double defaultGradientRate_{0.0};     ///< The default gradient rate
 
-        bool saveMazeImage_; ///< True if the maze should be saved as an image
+        bool saveMazeImage_;      ///< True if the maze should be saved as an image
+        bool saveSolutionImages_; ///< True if the solutions should be saved as images
     };
 } // namespace mazes
 

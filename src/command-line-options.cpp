@@ -47,7 +47,8 @@ namespace mazes {
             ("gradient", po::value<double>()->default_value(defaultGradientRate_),
              "The rate the gradient of the path changes");
         imageOptions.add_options()
-            ("save-maze", "save maze to image file");
+            ("save-maze", "save maze to image file")
+            ("save-solutions", "save solutions to image file");
         // clang-format on
 
         description_.add(generalOptions)
@@ -78,6 +79,7 @@ namespace mazes {
         gradientRate_ = vm["gradient"].as<double>();
 
         saveMazeImage_ = vm.count("save-maze");
+        saveSolutionImages_ = vm.count("save-solutions");
 
         if (vm["maze-method"].as<std::string>() == "prims") {
             mazeMethod_ = Maze::Method::prims;
